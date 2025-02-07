@@ -26,21 +26,19 @@ jobs:
   
   terraform-init:
     executor: terraform-executor
-    working_directory: ~/terraform
     steps:
       - checkout
       - run:
           name: Terraform Init
-          command: terraform init
+          command: cd terraform && terraform init
 
   terraform-plan:
     executor: terraform-executor
-    working_directory: ~/terraform
     steps:
       - checkout
       - run:
           name: Terraform Plan
-          command: terraform plan -out=tfplan
+          command: cd terraform && terraform plan -out=tfplan
       - persist_to_workspace:
           root: .
           paths:
@@ -55,7 +53,7 @@ jobs:
           at: .
       - run:
           name: Terraform Apply
-          command: terraform apply -auto-approve tfplan
+          command: cd terraform && terraform apply -auto-approve tfplan
 
   terraform-destroy:
     executor: terraform-executor
