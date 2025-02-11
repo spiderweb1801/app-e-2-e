@@ -3,7 +3,7 @@ version: 2.1
 executors:
   terraform-executor:
     docker:
-      - image: hashicorp/terraform:latest
+      - image: hashicorp/terraform:light
 
 parameters:
   deploy_infra:
