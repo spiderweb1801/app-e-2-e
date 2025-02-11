@@ -40,6 +40,9 @@ jobs:
             export AWS_WEB_IDENTITY_TOKEN_FILE="/tmp/token.jwt"
             aws --version
             echo "OIDC Token: ${CIRCLE_OIDC_TOKEN}" | jq -R 'split(".") | .[1] | @base64d | fromjson'
+            echo "OIDC Token Raw: ${CIRCLE_OIDC_TOKEN}"
+            echo "Decoded Token:" 
+            echo "${CIRCLE_OIDC_TOKEN}" | jq -R 'split(".") | .[1] | @base64d | fromjson'
             # curl -fsSL "${CIRCLE_OIDC_TOKEN}" -o $AWS_WEB_IDENTITY_TOKEN_FILE
             aws sts assume-role-with-web-identity \
               --role-arn "$AWS_ROLE_ARN" \
