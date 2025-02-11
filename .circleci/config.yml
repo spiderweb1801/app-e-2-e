@@ -31,7 +31,6 @@ jobs:
       - run:
           name: Authenticate with AWS OIDC
           command: |
-            - run:
             cat /etc/os-release
             apt update && apt install -y curl
             export AWS_ROLE_ARN="arn:aws:iam::183631319967:role/sagar-oidc"
