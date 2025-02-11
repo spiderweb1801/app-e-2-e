@@ -36,6 +36,7 @@ jobs:
             export AWS_ROLE_ARN="arn:aws:iam::183631319967:role/sagar-oidc"
             export AWS_WEB_IDENTITY_TOKEN_FILE="/tmp/token"
             apk add curl
+            which curl
             curl -fsSL "${CIRCLE_OIDC_TOKEN}" -o $AWS_WEB_IDENTITY_TOKEN_FILE
             aws sts assume-role-with-web-identity \
               --role-arn "$AWS_ROLE_ARN" \
