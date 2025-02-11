@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Authenticate with AWS OIDC
           command: |
-            yum install curl
+            apk update && apk add --no-cache unzip curl
             export AWS_ROLE_ARN="arn:aws:iam::183631319967:role/sagar-oidc"
             export AWS_WEB_IDENTITY_TOKEN_FILE="/tmp/token"
             curl -fsSL "${CIRCLE_OIDC_TOKEN}" -o $AWS_WEB_IDENTITY_TOKEN_FILE
@@ -123,9 +123,9 @@ workflows:
       - terraform-plan:
           requires:
             - terraform-init
-      - terraform-apply:
-          requires:
-            - terraform-plan
+      # - terraform-apply:
+      #     requires:
+      #       - terraform-plan
   build-and-deploy:
     when: << pipeline.parameters.deploy_k8s >>
     jobs:
