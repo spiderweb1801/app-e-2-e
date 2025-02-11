@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Authenticate with AWS OIDC
           command: |
-            yum install -y unzip curl
+            apt update && apt install -y curl
             export AWS_ROLE_ARN="arn:aws:iam::183631319967:role/sagar-oidc"
             export AWS_WEB_IDENTITY_TOKEN_FILE="/tmp/token"
             curl -fsSL "${CIRCLE_OIDC_TOKEN}" -o $AWS_WEB_IDENTITY_TOKEN_FILE
