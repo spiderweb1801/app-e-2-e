@@ -33,10 +33,11 @@ jobs:
           name: Authenticate with AWS OIDC
           command: |
             cat /etc/os-release
-            apt update && apt install -y curl unzip
+            apk add --no-cache curl jq aws-cli
+            echo "${CIRCLE_OIDC_TOKEN}" > /tmp/token.jwt
             export AWS_ROLE_ARN="arn:aws:iam::183631319967:role/sagar-oidc"
             export AWS_WEB_IDENTITY_TOKEN_FILE="/tmp/token"
-            apk add curl
+            apk add curl aws
             which curl
             # curl -fsSL "${CIRCLE_OIDC_TOKEN}" -o $AWS_WEB_IDENTITY_TOKEN_FILE
             aws sts assume-role-with-web-identity \
