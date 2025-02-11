@@ -30,7 +30,7 @@ jobs:
       - checkout
       - run:
           name: Terraform Init
-          command: cd terraform && terraform init
+          command: cd terraform && terraform init -backend-config=backend/dev
 
   terraform-plan:
     executor: terraform-executor
