@@ -32,8 +32,7 @@ jobs:
           name: Authenticate with AWS OIDC
           command: |
             cat /etc/os-release
-            apk del --purge curl
-            apk update && apk add --no-cache curl unzip bash
+            apk update && apk add --no-cache curl unzip bash libcurl
             export AWS_ROLE_ARN="arn:aws:iam::183631319967:role/sagar-oidc"
             export AWS_WEB_IDENTITY_TOKEN_FILE="/tmp/token"
             curl -fsSL "${CIRCLE_OIDC_TOKEN}" -o $AWS_WEB_IDENTITY_TOKEN_FILE
