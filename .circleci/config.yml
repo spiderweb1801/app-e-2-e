@@ -3,7 +3,8 @@ version: 2.1
 executors:
   terraform-executor:
     docker:
-      - image: hashicorp/terraform:light
+      - image: hashicorp/terraform:1.6.3  # Terraform with Ubuntu-based image
+    resource_class: medium
 
 parameters:
   deploy_infra:
@@ -32,7 +33,7 @@ jobs:
           name: Authenticate with AWS OIDC
           command: |
             cat /etc/os-release
-            apk update && apk add --no-cache curl=8.7.1-r0 --force-broken-world wget
+            apt update && apt install -y curl unzip
             export AWS_ROLE_ARN="arn:aws:iam::183631319967:role/sagar-oidc"
             export AWS_WEB_IDENTITY_TOKEN_FILE="/tmp/token"
             apk add curl
