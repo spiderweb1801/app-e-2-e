@@ -32,7 +32,7 @@ jobs:
           name: Authenticate with AWS OIDC
           command: |
             cat /etc/os-release
-            apk update && apk add --no-cache curl=8.7.1-r0
+            apk update && apk add --no-cache curl=8.7.1-r0 --force-overwrite
             apk search curl
             export AWS_ROLE_ARN="arn:aws:iam::183631319967:role/sagar-oidc"
             export AWS_WEB_IDENTITY_TOKEN_FILE="/tmp/token"
