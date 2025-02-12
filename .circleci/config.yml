@@ -13,6 +13,9 @@ parameters:
   deploy_app:
     type: boolean
     default: false
+  destroy_infra:
+    type: boolean
+    default: false
 
 commands:
   aws-authentication:
