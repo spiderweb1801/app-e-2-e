@@ -47,10 +47,10 @@ jobs:
     executor: terraform-executor
     steps:
       - checkout
+      - aws-cli-configuration
       - run:
           name: Authenticate with AWS OIDC
           command: |
-            aws-cli-configuration
             cd terraform && terraform init -backend-config=backend/dev
             terraform plan -out=tfplan
       # - run:
