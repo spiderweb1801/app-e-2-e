@@ -59,17 +59,6 @@ jobs:
           name: Say Hello
           command: echo "Hello, World!"
 
-  terraform-init:
-    executor: terraform-executor
-    steps:
-      - checkout
-      - aws-authentication
-      - run:
-          name: Terraform Init
-          command: |
-            source $BASH_ENV
-            cd terraform && terraform init -backend-config=backend/dev
-
   terraform-plan:
     executor: terraform-executor
     working_directory: ~/terraform
@@ -160,10 +149,7 @@ workflows:
   terraform-deploy:
     when: << pipeline.parameters.deploy_infra >>
     jobs:
-      - terraform-init
-      - terraform-plan:
-          requires:
-            - terraform-init
+      - terraform-plan
       - terraform-apply-approval:
           type: approval
           requires:
