@@ -164,6 +164,10 @@ workflows:
       - terraform-plan:
           requires:
             - terraform-init
+      - terraform-apply-approval:
+          type: approval
+          requires:
+            - terraform-plan
   build-and-deploy:
     when: << pipeline.parameters.deploy_k8s >>
     jobs:
