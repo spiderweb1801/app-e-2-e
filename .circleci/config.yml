@@ -87,6 +87,11 @@ jobs:
           at: .
       - aws-authentication
       - run:
+          name: Terraform Init
+          command: |
+            source $BASH_ENV
+            cd terraform && terraform init -backend-config=backend/dev
+      - run:
           name: Terraform Apply
           command: |
             source $BASH_ENV
