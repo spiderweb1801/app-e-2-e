@@ -168,7 +168,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/python:latest
+      - image: amazon/aws-cli:latest
     steps:
       - checkout
       - aws-authentication-docker
