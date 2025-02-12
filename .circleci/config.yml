@@ -141,7 +141,7 @@ jobs:
           name: Terraform Destroy
           command: |
             source $BASH_ENV
-            terraform destroy -auto-approve
+            terraform destroy -auto-approve   
 
   build:
     docker:
@@ -224,3 +224,8 @@ workflows:
       - deploy:
           requires:
             - build
+
+  terraform-destroy:
+    when: << pipeline.parameters.destroy_infra >>
+    jobs:
+      - terraform-destroy
