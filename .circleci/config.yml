@@ -42,7 +42,7 @@ jobs:
             # echo "Decoded Token:" 
             # echo "${CIRCLE_OIDC_TOKEN}" | jq -R 'split(".") | .[1] | @base64d | fromjson'
             # curl -fsSL "${CIRCLE_OIDC_TOKEN}" -o $AWS_WEB_IDENTITY_TOKEN_FILE
-            aws sts assume-role-with-web-identity --role-arn "arn:aws:iam::183631319967:role/sagar-oidc" --role-session-name "CircleCISession" --web-identity-token "$(echo $CIRCLE_OIDC_TOKEN)"
+            # aws sts assume-role-with-web-identity --role-arn "arn:aws:iam::183631319967:role/sagar-oidc" --role-session-name "CircleCISession" --web-identity-token "$(echo $CIRCLE_OIDC_TOKEN)"
             aws sts assume-role-with-web-identity \
               --role-arn "$AWS_ROLE_ARN" \
               --role-session-name "CircleCIJob" \
