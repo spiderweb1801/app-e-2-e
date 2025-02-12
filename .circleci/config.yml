@@ -173,14 +173,13 @@ jobs:
       - checkout
       - aws-authentication-docker
       - run:
+          name: Install Required Packages (jq, curl, tar)
+          command: |
+            apk update
+            apk add --no-cache jq curl tar gzip bash
+      - run:
           name: Install kubectl & AWS IAM Authenticator
           command: |
-            # Update package indexes
-            apk update
-            
-            # Install curl, jq, and tar (if missing)
-            apk add --no-cache curl jq tar gzip
-
             # Install kubectl
             curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
             chmod +x kubectl
