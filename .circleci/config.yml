@@ -168,25 +168,22 @@ jobs:
 
   deploy:
     docker:
-      - image: amazon/aws-cli:latest
+      - image: ubuntu:latest
     steps:
       - checkout
       - aws-authentication-docker
       - run:
-          name: Install Required Packages (jq, curl, tar)
+          name: Install Required Packages (AWS CLI, jq, curl)
           command: |
-            apk update
-            apk add --no-cache jq curl tar gzip bash
+            apt-get update && apt-get install -y curl jq awscli
       - run:
           name: Install kubectl & AWS IAM Authenticator
           command: |
-            # Install kubectl
             curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
             chmod +x kubectl
             mv kubectl /usr/local/bin/
             kubectl version --client
             
-            # Install AWS IAM Authenticator
             curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/latest/download/aws-iam-authenticator-linux-amd64
             chmod +x aws-iam-authenticator
             mv aws-iam-authenticator /usr/local/bin/
@@ -202,6 +199,7 @@ jobs:
             kubectl apply -f k8s/namespace.yaml
             kubectl apply -f k8s/deployment.yaml
             kubectl apply -f k8s/service.yaml
+
 
 
 workflows:
