@@ -168,28 +168,42 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/python:latest
+      - image: amazon/aws-cli:latest
     steps:
       - checkout
       - aws-authentication-docker
       - run:
-          name: Install kubectl
+          name: Install kubectl & AWS IAM Authenticator
           command: |
-            curl -LO "https://dl.k8s.io/release/v1.32.1/bin/linux/amd64/kubectl"
+            # Update package indexes
+            apk update
+            
+            # Install curl, jq, and tar (if missing)
+            apk add --no-cache curl jq tar gzip
+
+            # Install kubectl
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
             chmod +x kubectl
-            sudo mv kubectl /usr/local/bin/
+            mv kubectl /usr/local/bin/
             kubectl version --client
+            
+            # Install AWS IAM Authenticator
+            curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/latest/download/aws-iam-authenticator-linux-amd64
+            chmod +x aws-iam-authenticator
+            mv aws-iam-authenticator /usr/local/bin/
+            aws-iam-authenticator version
       - run:
           name: Configure AWS CLI & EKS Access
           command: |
             source $BASH_ENV
-            aws eks update-kubeconfig --name hello-world-cluster --region ap-south-1
+            aws eks update-kubeconfig --name hello-world-cluster --region ap-south-1 --alias eks-cluster
       - run:
           name: Deploy to Kubernetes (Fargate)
           command: |
-            kubectl apply -f k8s/namespace.yml
-            kubectl apply -f k8s/deployment.yml
-            kubectl apply -f k8s/service.yml
+            kubectl apply -f k8s/namespace.yaml
+            kubectl apply -f k8s/deployment.yaml
+            kubectl apply -f k8s/service.yaml
+
 
 workflows:
   say-hello-workflow:
