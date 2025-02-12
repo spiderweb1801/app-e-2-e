@@ -173,6 +173,13 @@ jobs:
       - checkout
       - aws-authentication-docker
       - run:
+          name: Install kubectl
+          command: |
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            chmod +x kubectl
+            sudo mv kubectl /usr/local/bin/
+            kubectl version --client
+      - run:
           name: Configure AWS CLI & EKS Access
           command: |
             source $BASH_ENV
