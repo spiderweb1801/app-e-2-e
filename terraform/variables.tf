@@ -16,12 +16,12 @@ locals {
     private_subnets = {
       subnet1 = {
         name              = "private-subnet-1"
-        cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, 0)
+        cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, 2)
         availability_zone = "${data.aws_region.current.name}a"
       },
       subnet2 = {
         name              = "private-subnet-2"
-        cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, 1)
+        cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, 3)
         availability_zone = "${data.aws_region.current.name}b"
       }
     }
