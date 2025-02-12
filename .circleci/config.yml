@@ -70,6 +70,20 @@ jobs:
             source $BASH_ENV
             cd terraform && terraform init -backend-config=backend/dev
 
+  terraform-plan:
+    executor: terraform-executor
+    working_directory: ~/terraform
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - aws-authentication
+      - run:
+          name: Terraform Plan
+          command: |
+            source $BASH_ENV
+            cd terraform && terraform plan
+            
   terraform-apply:
     executor: terraform-executor
     working_directory: ~/terraform
@@ -142,6 +156,9 @@ workflows:
     when: << pipeline.parameters.deploy_infra >>
     jobs:
       - terraform-init
+      - terraform-plan
+          requires:
+            - terraform-init
   build-and-deploy:
     when: << pipeline.parameters.deploy_k8s >>
     jobs:
