@@ -90,7 +90,7 @@ jobs:
           name: Terraform Apply
           command: |
             source $BASH_ENV
-            cd terraform && terraform apply -auto-approve tfplan
+            cd terraform && terraform apply -auto-approve
 
   terraform-destroy:
     executor: terraform-executor
