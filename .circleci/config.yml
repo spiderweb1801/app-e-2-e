@@ -69,25 +69,6 @@ jobs:
             AWS_SECRET_ACCESS_KEY=$(jq -r '.Credentials.SecretAccessKey' /tmp/aws-credentials.json)
             AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' /tmp/aws-credentials.json)
 
-            # Check if credentials were extracted correctly
-            if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ] || [ -z "$AWS_SESSION_TOKEN" ]; then
-              echo "Failed to extract AWS credentials"
-              exit 1
-            fi
-
-             # Persist credentials for later steps
-            echo "export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" >> $BASH_ENV
-            echo "export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" >> $BASH_ENV
-            echo "export AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}" >> $BASH_ENV
-            echo "export AWS_REGION=ap-south-1" >> $BASH_ENV
-            echo "export AWS_DEFAULT_REGION=ap-south-1" >> $BASH_ENV
-
-            echo "AWS credentials configured."
-            # cd terraform && terraform init -backend-config=backend/dev
-            # terraform plan -out=tfplan
-      -  run:
-          name: Verify AWS Credentials
-          command: aws sts get-caller-identity
       - run:
           name: Terraform Init
           command: |
