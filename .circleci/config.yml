@@ -168,14 +168,14 @@ jobs:
 
   deploy:
     docker:
-      - image: amazon/aws-cli:latest
+      - image: circleci/python:latest
     steps:
       - checkout
       - aws-authentication-docker
       - run:
           name: Install kubectl
           command: |
-            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            curl -LO "https://dl.k8s.io/release/v1.32.1/bin/linux/amd64/kubectl"
             chmod +x kubectl
             sudo mv kubectl /usr/local/bin/
             kubectl version --client
