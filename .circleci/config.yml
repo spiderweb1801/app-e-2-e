@@ -156,7 +156,7 @@ workflows:
     when: << pipeline.parameters.deploy_infra >>
     jobs:
       - terraform-init
-      - terraform-plan
+      - terraform-plan:
           requires:
             - terraform-init
   build-and-deploy:
