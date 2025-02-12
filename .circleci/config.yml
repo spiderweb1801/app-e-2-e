@@ -52,21 +52,22 @@ jobs:
             export AWS_SECRET_ACCESS_KEY=$(jq -r '.Credentials.SecretAccessKey' /tmp/aws-credentials.json)
             export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' /tmp/aws-credentials.json)
             cd terraform && terraform init -backend-config=backend/dev
+            cd terraform && terraform plan -out=tfplan
       # - run:
       #     name: Terraform Init
       #     command: cd terraform && terraform init -backend-config=backend/dev
 
-  terraform-plan:
-    executor: terraform-executor
-    steps:
-      - checkout
-      - run:
-          name: Terraform Plan
-          command: cd terraform && terraform plan -out=tfplan
-      - persist_to_workspace:
-          root: .
-          paths:
-            - tfplan
+  # terraform-plan:
+  #   executor: terraform-executor
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Terraform Plan
+  #         command: cd terraform && terraform plan -out=tfplan
+  #     - persist_to_workspace:
+  #         root: .
+  #         paths:
+  #           - tfplan
 
   terraform-apply:
     executor: terraform-executor
@@ -129,9 +130,9 @@ workflows:
     when: << pipeline.parameters.deploy_infra >>
     jobs:
       - terraform-init
-      - terraform-plan:
-          requires:
-            - terraform-init
+      # - terraform-plan:
+      #     requires:
+      #       - terraform-init
       # - terraform-apply:
       #     requires:
       #       - terraform-plan
