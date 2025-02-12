@@ -110,7 +110,7 @@ jobs:
 
   build:
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:latest
     steps:
       - checkout
       - setup_remote_docker:
@@ -131,7 +131,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:latest
     steps:
       - checkout
       - aws-authentication
