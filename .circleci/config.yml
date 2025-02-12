@@ -52,7 +52,7 @@ jobs:
             export AWS_SECRET_ACCESS_KEY=$(jq -r '.Credentials.SecretAccessKey' /tmp/aws-credentials.json)
             export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' /tmp/aws-credentials.json)
             cd terraform && terraform init -backend-config=backend/dev
-            cd terraform && terraform plan -out=tfplan
+            terraform plan -out=tfplan
       # - run:
       #     name: Terraform Init
       #     command: cd terraform && terraform init -backend-config=backend/dev
