@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: hello-world
-          image: nginx:latest
+          image: 183631319967.dkr.ecr.ap-south-1.amazonaws.com/hello-world:latest #nginx:latest
           ports:
             - containerPort: 80
 
