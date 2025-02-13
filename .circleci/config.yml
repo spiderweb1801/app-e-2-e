@@ -109,6 +109,31 @@ commands:
               sudo mv kubectl /usr/local/bin/
               kubectl version --client
 
+  update-eks-kube-config:
+    steps:
+        - run:
+            name: EKS config
+            command: |
+              source $BASH_ENV
+              aws eks update-kubeconfig --name hello-world-cluster --region ap-south-1 --alias eks-cluster
+
+  verify-eks:
+    steps:
+        - run:
+            name: Kubernetes verification
+            command: |
+              kubectl config current-context
+              kubectl get nodes
+              aws sts get-caller-identity
+              kubectl get configmap -n kube-system aws-auth -o yaml
+              kubectl get namespaces
+              aws eks list-fargate-profiles --cluster-name hello-world-cluster
+              kubectl get deployments -A
+              kubectl get pods -A
+              kubectl get services -A
+              kubectl describe pods -A
+              kubectl describe ingress my-app-ingress
+              aws eks describe-cluster --name hello-world-cluster
 jobs:
   say-hello:
     docker:
@@ -203,12 +228,7 @@ jobs:
       - checkout
       - aws-authentication-docker
       - install-kubectl
-
-      - run:
-          name: Configure AWS CLI & EKS Access
-          command: |
-            source $BASH_ENV
-            aws eks update-kubeconfig --name hello-world-cluster --region ap-south-1 --alias eks-cluster
+      - update-eks-kube-config
       - run:
           name: Deploy to Kubernetes (Fargate)
           command: |
@@ -216,14 +236,7 @@ jobs:
             kubectl apply -f k8s/deployment.yaml
             kubectl apply -f k8s/service.yaml
             kubectl apply -f k8s/configmap.yaml
-      - run:
-          name: Check EKS Cluster Context
-          command: |
-            kubectl config current-context
-            kubectl get nodes
-            kubectl get all -A
-            aws sts get-caller-identity
-            kubectl get configmap -n kube-system aws-auth -o yaml
+      - verify-eks
 
   verify-deployments:
     docker:
@@ -232,37 +245,8 @@ jobs:
       - checkout
       - aws-authentication-docker
       - install-kubectl
-      - run:
-          name: Check EKS Cluster Context
-          command: |
-            aws sts get-caller-identity
-            # kubectl config current-context
-            kubectl get nodes
-            kubectl get all -A
-      - run:
-          name: Verify Namespace Exists
-          command: |
-            kubectl get namespaces
-      - run:
-          name: Check EKS Nodes
-          command: |
-            aws eks list-fargate-profiles --cluster-name hello-world-cluster
-            kubectl get nodes
-      - run:
-          name: Debug Kubernetes Resources
-          command: |
-            kubectl get deployments -A
-            kubectl get pods -A
-            kubectl get services -A
-            kubectl describe pods -A
-            kubectl describe ingress my-app-ingress
-
-      - run:
-          name: Check IAM Role Permissions
-          command: |
-            aws sts get-caller-identity
-            aws eks describe-cluster --name hello-world-cluster
-
+      - update-eks-kube-config
+      - verify-eks
 
 workflows:
   terraform-deploy:
