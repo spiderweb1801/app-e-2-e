@@ -134,6 +134,8 @@ commands:
               kubectl describe pods -A
               kubectl describe ingress my-app-ingress
               aws eks describe-cluster --name hello-world-cluster
+              kubectl get svc -n hello-world-service
+
 jobs:
   say-hello:
     docker:
@@ -262,7 +264,7 @@ workflows:
             - terraform-apply-approval
   
   build-and-deploy:
-    when: << pipeline.parameters.deploy_app >>
+    # when: << pipeline.parameters.deploy_app >>
     jobs:
       - build
       - deploy:
@@ -270,7 +272,7 @@ workflows:
             - build
 
   verify-deployment:
-    # when: << pipeline.parameters.verify_app >>
+    when: << pipeline.parameters.verify_app >>
     jobs:
       - verify-deployments
 

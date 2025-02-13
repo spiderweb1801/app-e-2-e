@@ -1,14 +1,18 @@
-# File: k8s/service.yaml
-apiVersion: v1
-kind: Service
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: hello-world-service
-  namespace: hello-world
+  name: my-app-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
 spec:
-  selector:
-    app: hello-world
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-  type: LoadBalancer
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hello-world-service
+                port:
+                  number: 80
