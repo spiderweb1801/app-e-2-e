@@ -71,7 +71,7 @@ commands:
             sudo ./aws/install --update
             export PATH=/usr/local/bin:$PATH
             aws --version
-            
+
             aws sts assume-role-with-web-identity \
                   --role-arn "$AWS_ROLE_ARN" \
                   --role-session-name "CircleCIJob" \
@@ -92,7 +92,9 @@ commands:
             echo "export AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}" >> $BASH_ENV
             echo "export AWS_REGION=ap-south-1" >> $BASH_ENV
             echo "export AWS_DEFAULT_REGION=ap-south-1" >> $BASH_ENV
-
+            
+            export AWS_PAGER=""
+            echo 'export AWS_PAGER=""' >> $BASH_ENV
             source $BASH_ENV
 
             aws sts get-caller-identity
