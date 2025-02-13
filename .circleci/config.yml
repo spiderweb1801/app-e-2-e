@@ -96,8 +96,9 @@ commands:
             aws sts get-caller-identity
 
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            echo "HERE????????????????"
+           
             unzip awscliv2.zip
+            echo "HERE????????????????"
             sudo ./aws/install --update
             aws --version
             aws sts get-caller-identity
