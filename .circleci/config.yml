@@ -151,6 +151,13 @@ commands:
               echo "====kubectl get svc -A===="
               kubectl get svc -A
 
+  common:
+    steps:
+      - checkout
+      - aws-authentication-docker
+      - install-kubectl
+      - update-eks-kube-config
+
   delete-pods:
     steps:
       - run:
@@ -249,10 +256,7 @@ jobs:
     docker:
       - image: circleci/python:latest
     steps:
-      - checkout
-      - aws-authentication-docker
-      - install-kubectl
-      - update-eks-kube-config
+      - common
       - run:
           name: Deploy to Kubernetes (Fargate)
           command: |
@@ -267,16 +271,14 @@ jobs:
     docker:
       - image: circleci/python:latest
     steps:
-      - checkout
-      - aws-authentication-docker
-      - install-kubectl
-      - update-eks-kube-config
+      - common
       - verify-eks
 
   delete-pods:
     docker:
       - image: circleci/python:latest
     steps:
+      - common
       - delete-pods
 
 workflows:
