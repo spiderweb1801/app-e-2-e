@@ -318,6 +318,8 @@ jobs:
       - common
       - delete-pods
 
+# jobs to destroy k8s manifestations. + need to use docker file for the application
+
 workflows:
   terraform-deploy:
     when: << pipeline.parameters.deploy_infra >>
