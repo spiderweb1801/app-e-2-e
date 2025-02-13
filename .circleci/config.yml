@@ -166,10 +166,10 @@ commands:
               echo "====kubectl describe pods -A===="
               echo "================================"
               kubectl describe pods -A
-              echo "==============================================="
-              echo "====kubectl describe ingress my-app-ingress===="
-              echo "==============================================="
-              kubectl describe ingress my-app-ingress
+              echo "==========================================================================="
+              echo "====kubectl describe ingress NOT my-app-ingress BUT hello-world-ingress===="
+              echo "==========================================================================="
+              kubectl describe ingress hello-world-ingress
               echo "==========================================================="
               echo "====aws eks describe-cluster --name hello-world-cluster===="
               echo "==========================================================="
@@ -314,8 +314,6 @@ jobs:
     steps:
       - common
       - delete-pods
-
-# jobs to destroy k8s manifestations.
 
 workflows:
   terraform-deploy:
