@@ -193,7 +193,7 @@ commands:
           command: |
             kubectl delete pod -n hello-world --all
     #         kubectl rollout restart deployment hello-world -n hello-world
-    
+
   # recreate-deployment:
     # steps:
     #   - run:
@@ -339,12 +339,12 @@ workflows:
             - build
 
   verify-deployment:
-    when: << pipeline.parameters.verify_app >>
+    # when: << pipeline.parameters.verify_app >>
     jobs:
       - verify-deployments
 
   delete-pods:
-    # when: << pipeline.parameters.delete_pods >>
+    when: << pipeline.parameters.delete_pods >>
     jobs:
       - delete-pods
 
