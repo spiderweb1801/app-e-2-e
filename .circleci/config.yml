@@ -23,7 +23,7 @@ commands:
       - run:
           name: Authenticate with AWS OIDC
           command: |
-            apk add --no-cache curl jq aws-cliv2
+            apk add --no-cache curl jq aws-cli
             echo "${CIRCLE_OIDC_TOKEN}" > /tmp/token.jwt || true
             export AWS_ROLE_ARN="arn:aws:iam::183631319967:role/sagar-oidc"
             export AWS_WEB_IDENTITY_TOKEN_FILE="/tmp/token.jwt"
@@ -57,11 +57,14 @@ commands:
       - run:
           name: Authenticate with AWS OIDC
           command: |
-            sudo apt-get update && sudo apt-get install -y curl jq awscliv2
+            sudo apt-get update && sudo apt-get install -y curl jq
             echo "${CIRCLE_OIDC_TOKEN}" > /tmp/token.jwt || true
             export AWS_ROLE_ARN="arn:aws:iam::183631319967:role/sagar-oidc"
             export AWS_WEB_IDENTITY_TOKEN_FILE="/tmp/token.jwt"
-
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install --update
+            aws --version
             aws sts assume-role-with-web-identity \
                   --role-arn "$AWS_ROLE_ARN" \
                   --role-session-name "CircleCIJob" \
