@@ -228,7 +228,7 @@ jobs:
       - run:
           name: Check EKS Cluster Context
           command: |
-            kubectl config current-context
+            # kubectl config current-context
             kubectl get nodes
             kubectl get all -A
       - run:
@@ -268,7 +268,7 @@ workflows:
             - terraform-apply-approval
   
   build-and-deploy:
-    # when: << pipeline.parameters.deploy_app >>
+    when: << pipeline.parameters.deploy_app >>
     jobs:
       - build
       - deploy:
@@ -276,7 +276,7 @@ workflows:
             - build
 
   verify-deployment:
-    when: << pipeline.parameters.verify_app >>
+    # when: << pipeline.parameters.verify_app >>
     jobs:
       - verify-deployments
 
