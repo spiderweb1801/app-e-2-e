@@ -126,29 +126,57 @@ commands:
             name: Kubernetes verification
             command: |
               kubectl config current-context
+              echo "========================="
               echo "====kubectl get nodes===="
+              echo "========================="
               kubectl get nodes
+              echo "==================================="
               echo "====aws sts get-caller-identity===="
+              echo "==================================="
               aws sts get-caller-identity
+              echo "============================================================="
               echo "====kubectl get configmap -n kube-system aws-auth -o yaml===="
+              echo "============================================================="
               kubectl get configmap -n kube-system aws-auth -o yaml
+              echo "=============================="
               echo "====kubectl get namespaces===="
+              echo "=============================="
               kubectl get namespaces
+              echo "========================================================================"
               echo "====aws eks list-fargate-profiles --cluster-name hello-world-cluster===="
+              echo "========================================================================"
               aws eks list-fargate-profiles --cluster-name hello-world-cluster
+              echo "====================================================================================================================="
+              echo "====aws eks describe-fargate-profile --cluster-name <EKS_CLUSTER_NAME> --fargate-profile-name hello-world-fargate===="
+              echo "====================================================================================================================="
+              aws eks describe-fargate-profile --cluster-name <EKS_CLUSTER_NAME> --fargate-profile-name hello-world-fargate
+              echo "=================================="
               echo "====kubectl get deployments -A===="
+              echo "=================================="
               kubectl get deployments -A
+              echo "==========================="
               echo "====kubectl get pods -A===="
+              echo "==========================="
               kubectl get pods -A
+              echo "==============================="
               echo "====kubectl get services -A===="
+              echo "==============================="
               kubectl get services -A
+              echo "================================"
               echo "====kubectl describe pods -A===="
+              echo "================================"
               kubectl describe pods -A
+              echo "==============================================="
               echo "====kubectl describe ingress my-app-ingress===="
+              echo "==============================================="
               kubectl describe ingress my-app-ingress
+              echo "==========================================================="
               echo "====aws eks describe-cluster --name hello-world-cluster===="
+              echo "==========================================================="
               aws eks describe-cluster --name hello-world-cluster
+              echo "=========================="
               echo "====kubectl get svc -A===="
+              echo "=========================="
               kubectl get svc -A
 
   common:
@@ -303,12 +331,12 @@ workflows:
             - build
 
   verify-deployment:
-    when: << pipeline.parameters.verify_app >>
+    # when: << pipeline.parameters.verify_app >>
     jobs:
       - verify-deployments
 
   delete-pods:
-    # when: << pipeline.parameters.delete_pods >>
+    when: << pipeline.parameters.delete_pods >>
     jobs:
       - delete-pods
 
