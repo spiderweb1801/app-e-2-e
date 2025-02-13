@@ -60,7 +60,8 @@ commands:
       - run:
           name: Authenticate with AWS OIDC
           command: |
-            sudo apt-get update && sudo apt-get install -y curl jq less unzip
+            sudo apt-get update && sudo apt-get install -y curl jq less
+
             echo "${CIRCLE_OIDC_TOKEN}" > /tmp/token.jwt || true
             export AWS_ROLE_ARN="arn:aws:iam::183631319967:role/sagar-oidc"
             export AWS_WEB_IDENTITY_TOKEN_FILE="/tmp/token.jwt"
@@ -70,7 +71,7 @@ commands:
             sudo ./aws/install --update
             export PATH=/usr/local/bin:$PATH
             aws --version
-            echo "HERE!!"
+            
             aws sts assume-role-with-web-identity \
                   --role-arn "$AWS_ROLE_ARN" \
                   --role-session-name "CircleCIJob" \
@@ -91,6 +92,7 @@ commands:
             echo "export AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}" >> $BASH_ENV
             echo "export AWS_REGION=ap-south-1" >> $BASH_ENV
             echo "export AWS_DEFAULT_REGION=ap-south-1" >> $BASH_ENV
+
             source $BASH_ENV
 
             aws sts get-caller-identity
