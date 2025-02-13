@@ -133,6 +133,8 @@ commands:
               kubectl get namespaces
               echo "====aws eks list-fargate-profiles --cluster-name hello-world-cluster===="
               aws eks list-fargate-profiles --cluster-name hello-world-cluster
+              echo "====kubectl get fargateprofile===="
+              kubectl get fargateprofile
               echo "====kubectl get deployments -A===="
               kubectl get deployments -A
               echo "====kubectl get pods -A===="
@@ -250,6 +252,7 @@ jobs:
             kubectl apply -f k8s/deployment.yaml
             kubectl apply -f k8s/service.yaml
             kubectl apply -f k8s/configmap.yaml
+            kubectl apply -f k8s/ingress.yaml
       - verify-eks
 
   verify-deployments:

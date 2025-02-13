@@ -15,7 +15,7 @@ spec:
         app: hello-world
     spec:
       nodeSelector:
-        eks.amazonaws.com/fargate-profile: eks-fargate-pod-execution-role
+        eks.amazonaws.com/fargate-profile: hello-world-fargate
       containers:
         - name: hello-world
           image: 183631319967.dkr.ecr.ap-south-1.amazonaws.com/hello-world:latest
