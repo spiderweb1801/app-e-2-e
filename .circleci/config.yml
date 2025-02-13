@@ -272,7 +272,7 @@ workflows:
             - build
 
   verify-deployment:
-    # when: << pipeline.parameters.verify_app >>
+    when: << pipeline.parameters.verify_app >>
     jobs:
       - verify-deployments
 
