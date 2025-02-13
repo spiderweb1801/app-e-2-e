@@ -147,9 +147,9 @@ commands:
               echo "========================================================================"
               aws eks list-fargate-profiles --cluster-name hello-world-cluster
               echo "====================================================================================================================="
-              echo "====aws eks describe-fargate-profile --cluster-name <EKS_CLUSTER_NAME> --fargate-profile-name hello-world-fargate===="
+              echo "====aws eks describe-fargate-profile --cluster-name hello-world-cluster --fargate-profile-name hello-world-fargate===="
               echo "====================================================================================================================="
-              aws eks describe-fargate-profile --cluster-name <EKS_CLUSTER_NAME> --fargate-profile-name hello-world-fargate
+              aws eks describe-fargate-profile --cluster-name hello-world-cluster --fargate-profile-name hello-world-fargate
               echo "=================================="
               echo "====kubectl get deployments -A===="
               echo "=================================="
