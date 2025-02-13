@@ -18,6 +18,11 @@ spec:
           image: 183631319967.dkr.ecr.ap-south-1.amazonaws.com/hello-world:latest #nginx:latest
           ports:
             - containerPort: 80
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 10
 
 
 # # File: k8s/deployment.yaml
