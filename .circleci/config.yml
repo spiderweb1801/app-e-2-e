@@ -217,6 +217,7 @@ jobs:
             kubectl config current-context
             kubectl get nodes
             kubectl get all -A
+            aws sts get-caller-identity
 
   verify-deployments:
     docker:
