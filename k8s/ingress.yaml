@@ -29,8 +29,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: hello-world.example.com  # Change this to your domain or remove it
-      http:
+    - http:
         paths:
           - path: /
             pathType: Prefix
