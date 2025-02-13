@@ -211,6 +211,12 @@ jobs:
             kubectl apply -f k8s/namespace.yaml
             kubectl apply -f k8s/deployment.yaml
             kubectl apply -f k8s/service.yaml
+      - run:
+          name: Check EKS Cluster Context
+          command: |
+            kubectl config current-context
+            kubectl get nodes
+            kubectl get all -A
 
   verify-deployments:
     docker:
@@ -268,7 +274,7 @@ workflows:
             - terraform-apply-approval
   
   build-and-deploy:
-    when: << pipeline.parameters.deploy_app >>
+    # when: << pipeline.parameters.deploy_app >>
     jobs:
       - build
       - deploy:
@@ -276,7 +282,7 @@ workflows:
             - build
 
   verify-deployment:
-    # when: << pipeline.parameters.verify_app >>
+    when: << pipeline.parameters.verify_app >>
     jobs:
       - verify-deployments
 
