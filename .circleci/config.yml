@@ -301,6 +301,7 @@ jobs:
             kubectl apply -f k8s/service.yaml
             kubectl apply -f k8s/configmap.yaml
             kubectl apply -f k8s/ingress.yaml
+            kubectl apply -f k8s/alb-controller.yaml
       - verify-eks
 
   verify-deployments:

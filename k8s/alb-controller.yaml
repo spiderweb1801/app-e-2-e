@@ -1,0 +1,59 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: aws-load-balancer-controller
+  namespace: kube-system
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::183631319967:role/AmazonEKSLoadBalancerControllerRole  # Replace with your IAM Role ARN
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: aws-load-balancer-controller
+rules:
+  - apiGroups: [""]
+    resources: ["services", "endpoints", "pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: aws-load-balancer-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: aws-load-balancer-controller
+subjects:
+  - kind: ServiceAccount
+    name: aws-load-balancer-controller
+    namespace: kube-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-load-balancer-controller
+  namespace: kube-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aws-load-balancer-controller
+  template:
+    metadata:
+      labels:
+        app: aws-load-balancer-controller
+    spec:
+      serviceAccountName: aws-load-balancer-controller
+      containers:
+        - name: aws-load-balancer-controller
+          image: public.ecr.aws/eks/aws-load-balancer-controller:v2.6.0  # Update if a newer version is available
+          args:
+            - --cluster-name=hello-world-cluster  # Replace with your cluster name
+            - --ingress-class=alb
+          env:
+            - name: AWS_REGION
+              value: "ap-south-1"  # Change to your AWS region

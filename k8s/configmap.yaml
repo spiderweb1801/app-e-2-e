@@ -5,12 +5,12 @@ metadata:
   namespace: kube-system
 data:
   mapRoles: |
-    - rolearn: arn:aws:iam::183631319967:role/eks-fargate-pod-execution-role
-      username: system:node:{{SessionName}}
-      groups:
-        - system:bootstrappers
-        - system:nodes
-        - system:node-proxier
+    # - rolearn: arn:aws:iam::183631319967:role/eks-fargate-pod-execution-role
+    #   username: system:node:{{SessionName}}
+    #   groups:
+    #     - system:bootstrappers
+    #     - system:nodes
+    #     - system:node-proxier
     - rolearn: arn:aws:iam::183631319967:role/sagar-oidc
       username: admin
       groups:

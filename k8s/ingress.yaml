@@ -1,13 +1,35 @@
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: my-app-ingress
+#   annotations:
+#     alb.ingress.kubernetes.io/scheme: internet-facing
+# spec:
+#   ingressClassName: alb
+#   rules:
+#     - http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: hello-world-service
+#                 port:
+#                   number: 80
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: my-app-ingress
+  name: hello-world-ingress
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/group.name: "hello-world-alb"
 spec:
   ingressClassName: alb
   rules:
-    - http:
+    - host: hello-world.example.com  # Change this to your domain or remove it
+      http:
         paths:
           - path: /
             pathType: Prefix
