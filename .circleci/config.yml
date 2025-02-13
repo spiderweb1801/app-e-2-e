@@ -60,7 +60,7 @@ commands:
       - run:
           name: Authenticate with AWS OIDC
           command: |
-            sudo apt-get update && sudo apt-get install -y curl jq
+            sudo apt-get update && sudo apt-get install -y curl jq less
             echo "${CIRCLE_OIDC_TOKEN}" > /tmp/token.jwt || true
             export AWS_ROLE_ARN="arn:aws:iam::183631319967:role/sagar-oidc"
             export AWS_WEB_IDENTITY_TOKEN_FILE="/tmp/token.jwt"
