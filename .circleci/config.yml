@@ -187,18 +187,19 @@ commands:
       - update-eks-kube-config
 
   delete-pods:
-  #   steps:
-  #     - run:
-  #         name: Delete all the pods in hello-world namespace to recreate new ones
-  #         command: |
-  #           kubectl delete pod -n hello-world --all
-
-  # recreate-deployment:
     steps:
       - run:
-          name: Restart deployment hello-world
+          name: Delete all the pods in hello-world namespace to recreate new ones
           command: |
-            kubectl rollout restart deployment hello-world -n hello-world
+            kubectl delete pod -n hello-world --all
+    #         kubectl rollout restart deployment hello-world -n hello-world
+    
+  # recreate-deployment:
+    # steps:
+    #   - run:
+    #       name: Restart deployment hello-world
+    #       command: |
+    #         kubectl rollout restart deployment hello-world -n hello-world
 
 jobs:
   say-hello:
