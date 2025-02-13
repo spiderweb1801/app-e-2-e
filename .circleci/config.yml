@@ -19,6 +19,9 @@ parameters:
   verify_app:
     type: boolean
     default: false
+  delete_pods:
+    type: boolean
+    default: false
 
 commands:
   aws-authentication:
@@ -148,6 +151,13 @@ commands:
               echo "====kubectl get svc -A===="
               kubectl get svc -A
 
+  delete-pods:
+    steps:
+      - run:
+          name: Delete all the pods in hello-world namespace to recreate new ones
+          command: |
+            kubectl delete pod -n hello-world --all
+
 jobs:
   say-hello:
     docker:
@@ -263,6 +273,12 @@ jobs:
       - update-eks-kube-config
       - verify-eks
 
+  delete-pods:
+    docker:
+      - image: circleci/python:latest
+    steps:
+      - delete-pods
+
 workflows:
   terraform-deploy:
     when: << pipeline.parameters.deploy_infra >>
@@ -277,7 +293,7 @@ workflows:
             - terraform-apply-approval
   
   build-and-deploy:
-    # when: << pipeline.parameters.deploy_app >>
+    when: << pipeline.parameters.deploy_app >>
     jobs:
       - build
       - deploy:
@@ -288,6 +304,12 @@ workflows:
     when: << pipeline.parameters.verify_app >>
     jobs:
       - verify-deployments
+
+  delete-pods:
+    # when: << pipeline.parameters.delete_pods >>
+    jobs:
+      - delete-pods
+
 
   terraform-destroy:
     when: << pipeline.parameters.destroy_infra >>
