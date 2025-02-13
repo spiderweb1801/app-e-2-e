@@ -256,6 +256,8 @@ jobs:
             kubectl get pods -A
             kubectl get services -A
             kubectl describe pods -A
+            kubectl describe ingress my-app-ingress
+
       - run:
           name: Check IAM Role Permissions
           command: |
