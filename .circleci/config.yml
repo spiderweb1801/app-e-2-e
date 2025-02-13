@@ -16,6 +16,9 @@ parameters:
   destroy_infra:
     type: boolean
     default: false
+  verify_app:
+    type: boolean
+    default: false
 
 commands:
   aws-authentication:
@@ -204,6 +207,41 @@ jobs:
             kubectl apply -f k8s/deployment.yaml
             kubectl apply -f k8s/service.yaml
 
+  verify-deployments:
+    docker:
+      - image: circleci/python:latest
+    steps:
+      - checkout
+      - aws-authentication-docker
+      - run:
+          name: Check EKS Cluster Context
+          command: |
+            kubectl config current-context
+            kubectl get nodes
+            kubectl get all -A
+      - run:
+          name: Verify Namespace Exists
+          command: |
+            kubectl get namespaces
+      - run:
+          name: Check EKS Nodes
+          command: |
+            aws eks list-fargate-profiles --cluster-name hello-world-cluster
+            kubectl get nodes
+      - run:
+          name: Debug Kubernetes Resources
+          command: |
+            kubectl get deployments -A
+            kubectl get pods -A
+            kubectl get services -A
+            kubectl describe pods -A
+      - run:
+          name: Check IAM Role Permissions
+          command: |
+            aws sts get-caller-identity
+            aws eks describe-cluster --name hello-world-cluster
+
+
 workflows:
   terraform-deploy:
     when: << pipeline.parameters.deploy_infra >>
@@ -216,6 +254,7 @@ workflows:
       - terraform-apply:
           requires:
             - terraform-apply-approval
+  
   build-and-deploy:
     when: << pipeline.parameters.deploy_app >>
     jobs:
@@ -223,6 +262,12 @@ workflows:
       - deploy:
           requires:
             - build
+
+  verify-deployment:
+    when: << pipeline.parameters.verify_app >>
+    jobs:
+      - verify-deployments
+
   terraform-destroy:
     when: << pipeline.parameters.destroy_infra >>
     jobs:
