@@ -142,14 +142,14 @@ commands:
               echo "====kubectl get namespaces===="
               echo "=============================="
               kubectl get namespaces
-              echo "========================================================================"
-              echo "====aws eks list-fargate-profiles --cluster-name hello-world-cluster===="
-              echo "========================================================================"
-              aws eks list-fargate-profiles --cluster-name hello-world-cluster
-              echo "====================================================================================================================="
-              echo "====aws eks describe-fargate-profile --cluster-name hello-world-cluster --fargate-profile-name hello-world-fargate===="
-              echo "====================================================================================================================="
-              aws eks describe-fargate-profile --cluster-name hello-world-cluster --fargate-profile-name hello-world-fargate
+              # echo "========================================================================"
+              # echo "====aws eks list-fargate-profiles --cluster-name hello-world-cluster===="
+              # echo "========================================================================"
+              # aws eks list-fargate-profiles --cluster-name hello-world-cluster
+              # echo "====================================================================================================================="
+              # echo "====aws eks describe-fargate-profile --cluster-name hello-world-cluster --fargate-profile-name hello-world-fargate===="
+              # echo "====================================================================================================================="
+              # aws eks describe-fargate-profile --cluster-name hello-world-cluster --fargate-profile-name hello-world-fargate
               echo "=================================="
               echo "====kubectl get deployments -A===="
               echo "=================================="
@@ -315,7 +315,7 @@ jobs:
       - common
       - delete-pods
 
-# jobs to destroy k8s manifestations. + need to use docker file for the application
+# jobs to destroy k8s manifestations.
 
 workflows:
   terraform-deploy:
