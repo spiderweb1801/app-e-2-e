@@ -123,17 +123,29 @@ commands:
             name: Kubernetes verification
             command: |
               kubectl config current-context
+              echo "====kubectl get nodes===="
               kubectl get nodes
+              echo "====aws sts get-caller-identity===="
               aws sts get-caller-identity
+              echo "====kubectl get configmap -n kube-system aws-auth -o yaml===="
               kubectl get configmap -n kube-system aws-auth -o yaml
+              echo "====kubectl get namespaces===="
               kubectl get namespaces
+              echo "====aws eks list-fargate-profiles --cluster-name hello-world-cluster===="
               aws eks list-fargate-profiles --cluster-name hello-world-cluster
+              echo "====kubectl get deployments -A===="
               kubectl get deployments -A
+              echo "====kubectl get pods -A===="
               kubectl get pods -A
+              echo "====kubectl get services -A===="
               kubectl get services -A
+              echo "====kubectl describe pods -A===="
               kubectl describe pods -A
+              echo "====kubectl describe ingress my-app-ingress===="
               kubectl describe ingress my-app-ingress
+              echo "====aws eks describe-cluster --name hello-world-cluster===="
               aws eks describe-cluster --name hello-world-cluster
+              echo "====kubectl get svc -A===="
               kubectl get svc -A
 
 jobs:
