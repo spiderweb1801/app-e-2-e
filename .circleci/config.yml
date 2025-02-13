@@ -22,7 +22,10 @@ parameters:
   delete_pods:
     type: boolean
     default: false
-
+  delete_k8s_all:
+    type: boolean
+    default: false
+    
 commands:
   aws-authentication:
     steps:
@@ -201,6 +204,23 @@ commands:
     #       command: |
     #         kubectl rollout restart deployment hello-world -n hello-world
 
+  delete-all:
+    steps:
+      - run:
+          name: Delete all the resources in the cluster
+          command: |
+            kubectl delete ingress --all -n hello-world
+            kubectl delete svc --all -n hello-world
+            kubectl delete deployment --all -n hello-world
+            kubectl delete pod --all -n hello-world
+            kubectl delete configmap --all -n hello-world
+            kubectl delete serviceaccount --all -n hello-world
+            kubectl delete deployment aws-load-balancer-controller -n kube-system
+            kubectl delete namespace hello-world
+            kubectl delete clusterrole aws-load-balancer-controller
+            kubectl delete clusterrolebinding aws-load-balancer-controller
+            aws ecr batch-delete-image --repository-name hello-world --region ap-south-1 --image-ids $(aws ecr list-images --repository-name hello-world --region ap-south-1 --query 'imageIds[*]' --output json)
+
 jobs:
   say-hello:
     docker:
@@ -315,6 +335,13 @@ jobs:
       - common
       - delete-pods
 
+  delete-k8s-all:
+    docker:
+      - image: circleci/python:latest
+    steps:
+      - common
+      - delete-all
+
 workflows:
   terraform-deploy:
     when: << pipeline.parameters.deploy_infra >>
@@ -350,4 +377,10 @@ workflows:
   terraform-destroy:
     when: << pipeline.parameters.destroy_infra >>
     jobs:
+      - delete-k8s-all
       - terraform-destroy
+
+  delete-k8s-all:
+    when: << pipeline.parameters.delete_k8s_all >>
+    jobs:
+      - delete-k8s-all
