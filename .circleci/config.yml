@@ -176,14 +176,10 @@ jobs:
 
   deploy:
     docker:
-      - image: ubuntu:latest
+      - image: circleci/python:latest
     steps:
       - checkout
       - aws-authentication-docker
-      - run:
-          name: Install Required Packages (AWS CLI, jq, curl)
-          command: |
-            apt-get update && apt-get install -y curl jq awscli
       - run:
           name: Install kubectl & AWS IAM Authenticator
           command: |
@@ -191,11 +187,7 @@ jobs:
             chmod +x kubectl
             mv kubectl /usr/local/bin/
             kubectl version --client
-            
-            curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/latest/download/aws-iam-authenticator-linux-amd64
-            chmod +x aws-iam-authenticator
-            mv aws-iam-authenticator /usr/local/bin/
-            aws-iam-authenticator version
+
       - run:
           name: Configure AWS CLI & EKS Access
           command: |
