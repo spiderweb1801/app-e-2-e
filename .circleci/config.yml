@@ -209,12 +209,7 @@ commands:
       - run:
           name: Delete all the resources in the cluster
           command: |
-            kubectl delete ingress --all -n hello-world
-            kubectl delete svc --all -n hello-world
-            kubectl delete deployment --all -n hello-world
-            kubectl delete replicaset --all -n hello-world
-            kubectl delete pod --all -n hello-world
-            kubectl delete configmap --all -n hello-world
+            kubectl delete all --all -n hello-world
             kubectl delete serviceaccount --all -n hello-world
             kubectl delete deployment aws-load-balancer-controller -n kube-system
             kubectl delete namespace hello-world
