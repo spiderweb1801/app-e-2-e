@@ -218,6 +218,7 @@ jobs:
             kubectl get nodes
             kubectl get all -A
             aws sts get-caller-identity
+            kubectl get configmap -n kube-system aws-auth -o yaml
 
   verify-deployments:
     docker:
