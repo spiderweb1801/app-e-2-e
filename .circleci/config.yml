@@ -76,7 +76,7 @@ commands:
                   --role-session-name "CircleCIJob" \
                   --web-identity-token "$(cat $AWS_WEB_IDENTITY_TOKEN_FILE)" \
                   --duration-seconds 3600 > /tmp/aws-credentials.json
-
+            echo "HERE????????????????"
             AWS_ACCESS_KEY_ID=$(jq -r '.Credentials.AccessKeyId' /tmp/aws-credentials.json)
             AWS_SECRET_ACCESS_KEY=$(jq -r '.Credentials.SecretAccessKey' /tmp/aws-credentials.json)
             AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' /tmp/aws-credentials.json)
