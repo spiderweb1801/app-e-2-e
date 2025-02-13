@@ -70,7 +70,7 @@ commands:
             sudo ./aws/install --update
             export PATH=/usr/local/bin:$PATH
             aws --version
-
+            echo "HERE!!"
             aws sts assume-role-with-web-identity \
                   --role-arn "$AWS_ROLE_ARN" \
                   --role-session-name "CircleCIJob" \
