@@ -25,7 +25,7 @@ parameters:
   delete_k8s_all:
     type: boolean
     default: false
-    
+
 commands:
   aws-authentication:
     steps:
@@ -212,6 +212,7 @@ commands:
             kubectl delete ingress --all -n hello-world
             kubectl delete svc --all -n hello-world
             kubectl delete deployment --all -n hello-world
+            kubectl delete replicaset --all -n hello-world
             kubectl delete pod --all -n hello-world
             kubectl delete configmap --all -n hello-world
             kubectl delete serviceaccount --all -n hello-world
@@ -356,13 +357,13 @@ workflows:
             - terraform-apply-approval
   
   build-and-deploy:
-    # when: << pipeline.parameters.deploy_app >>
+    when: << pipeline.parameters.deploy_app >>
     jobs:
-      # - build
-      # - deploy:
-      #     requires:
-      #       - build
-      - deploy
+      - build
+      - deploy:
+          requires:
+            - build
+      # - deploy
 
   verify-deployment:
     when: << pipeline.parameters.verify_app >>
