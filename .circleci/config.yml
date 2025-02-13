@@ -99,6 +99,16 @@ commands:
 
             aws sts get-caller-identity
 
+  install-kubectl:
+    steps:
+        - run:
+            name: Authenticate with AWS OIDC
+            command: |
+              curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+              sudo chmod +x kubectl
+              sudo mv kubectl /usr/local/bin/
+              kubectl version --client
+
 jobs:
   say-hello:
     docker:
@@ -192,13 +202,7 @@ jobs:
     steps:
       - checkout
       - aws-authentication-docker
-      - run:
-          name: Install kubectl & AWS IAM Authenticator
-          command: |
-            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-            sudo chmod +x kubectl
-            sudo mv kubectl /usr/local/bin/
-            kubectl version --client
+      - install-kubectl
 
       - run:
           name: Configure AWS CLI & EKS Access
@@ -227,13 +231,7 @@ jobs:
     steps:
       - checkout
       - aws-authentication-docker
-      - run:
-          name: Install kubectl & AWS IAM Authenticator
-          command: |
-            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-            sudo chmod +x kubectl
-            sudo mv kubectl /usr/local/bin/
-            kubectl version --client
+      - install-kubectl
       - run:
           name: Check EKS Cluster Context
           command: |
