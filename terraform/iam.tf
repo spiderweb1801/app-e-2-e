@@ -21,6 +21,12 @@ resource "aws_iam_policy_attachment" "eks_cluster_policy" {
   roles      = [aws_iam_role.eks_role.name]
 }
 
+resource "aws_iam_policy_attachment" "eks_cluster_policy_2" {
+  name       = "eks-cluster-policy-attachment"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+  roles      = [aws_iam_role.eks_role.name]
+}
+
 resource "aws_iam_role" "eks_node_role" {
   name = "eks-node-group-role"
 
