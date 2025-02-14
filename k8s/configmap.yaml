@@ -15,6 +15,10 @@ data:
       username: admin
       groups:
         - system:masters
+    - rolearn: arn:aws:iam::183631319967:role/temp-ec2-eks
+      username: admin
+      groups:
+        - system:masters
   mapUsers: |
     - userarn: arn:aws:iam::183631319967:user/devops
       username: devops
