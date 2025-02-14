@@ -11,7 +11,7 @@ resource "aws_eks_cluster" "eks_cluster" {
     */
     endpoint_private_access = "false" 
     endpoint_public_access  = "true" //In order to access the cluster from internet. Defaults to true.
-    public_access_cidrs     = "0.0.0.0/0"    
+    public_access_cidrs     = [ "0.0.0.0/0" ]   
   }
 }
 
