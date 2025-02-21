@@ -172,7 +172,7 @@ commands:
               echo "==========================================================================="
               echo "====kubectl describe ingress NOT my-app-ingress BUT hello-world-ingress===="
               echo "==========================================================================="
-              kubectl describe ingress hello-world-ingress
+              # kubectl describe ingress hello-world-ingress
               echo "==========================================================="
               echo "====aws eks describe-cluster --name hello-world-cluster===="
               echo "==========================================================="
