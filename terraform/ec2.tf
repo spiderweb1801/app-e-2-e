@@ -20,6 +20,7 @@ resource "local_file" "private_key" {
 resource "aws_security_group" "ec2_sg" {
   name        = "ec2-ssh-access"
   description = "Allow SSH access"
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = 22
