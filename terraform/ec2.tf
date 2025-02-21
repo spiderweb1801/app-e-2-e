@@ -25,7 +25,7 @@ resource "aws_security_group" "ec2_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Open to all (change for security)
+    cidr_blocks = ["0.0.0.0/0"] # Open to all (change for security)
   }
 
   egress {
@@ -37,11 +37,11 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 # Create t3.medium EC2 Instance
-resource "aws_instance" "example" {
+resource "aws_instance" "bastion" {
   ami                    = var.ami
   instance_type          = "t3.medium"
   key_name               = aws_key_pair.generated_key.key_name
-  security_groups        = [aws_security_group.ec2_sg.name]
+  vpc_security_group_ids = [aws_security_group.ec2_sg.name]
   subnet_id              = aws_subnet.public_subnets["subnet1"].id
   iam_instance_profile   = "temp-ec2-eks"
 

@@ -9,8 +9,8 @@
 # }
 
 terraform {
-  backend "s3" {              # Change to your preferred AWS region
-    encrypt        = true
+  backend "s3" { # Change to your preferred AWS region
+    encrypt = true
   }
   required_providers {
     aws = {
