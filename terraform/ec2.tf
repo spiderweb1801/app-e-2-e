@@ -42,7 +42,7 @@ resource "aws_instance" "bastion" {
   ami                    = var.ami
   instance_type          = "t3.medium"
   key_name               = aws_key_pair.generated_key.key_name
-  vpc_security_group_ids = [aws_security_group.ec2_sg.name]
+  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
   subnet_id              = aws_subnet.public_subnets["subnet1"].id
   iam_instance_profile   = "temp-ec2-eks"
 
