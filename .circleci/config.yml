@@ -340,7 +340,7 @@ jobs:
 
 workflows:
   terraform-deploy:
-    # when: << pipeline.parameters.deploy_infra >>
+    when: << pipeline.parameters.deploy_infra >>
     jobs:
       - terraform-plan
       - terraform-apply-approval:
@@ -373,11 +373,11 @@ workflows:
   terraform-destroy:
     when: << pipeline.parameters.destroy_infra >>
     jobs:
-      - terraform-destroy
-      # - delete-k8s-all
-      # - terraform-destroy:
-      #     requires:
-      #       - delete-k8s-all
+      # - terraform-destroy
+      - delete-k8s-all
+      - terraform-destroy:
+          requires:
+            - delete-k8s-all
 
   delete-k8s-all:
     when: << pipeline.parameters.delete_k8s_all >>
