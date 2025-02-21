@@ -340,7 +340,7 @@ jobs:
 
 workflows:
   terraform-deploy:
-    when: << pipeline.parameters.deploy_infra >>
+    # when: << pipeline.parameters.deploy_infra >>
     jobs:
       - terraform-plan
       - terraform-apply-approval:
