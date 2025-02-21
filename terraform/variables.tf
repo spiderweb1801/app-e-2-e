@@ -27,3 +27,8 @@ locals {
     }
   }
 }
+
+variable "ami" {
+  type = string
+  default = "ami-001fa4fe00c43b5f6"
+}
