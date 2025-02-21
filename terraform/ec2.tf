@@ -43,6 +43,7 @@ resource "aws_instance" "example" {
   key_name               = aws_key_pair.generated_key.key_name
   security_groups        = [aws_security_group.ec2_sg.name]
   subnet_id              = aws_subnet.public_subnets["subnet1"].id
+  iam_instance_profile   = "temp-ec2-eks"
 
   tags = {
     Name = "Terraform-EC2-Bastion-Host"
