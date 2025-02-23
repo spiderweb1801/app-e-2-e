@@ -38,9 +38,9 @@ resource "aws_instance" "bastion" {
     yum update -y
 
     echo "Installing kubectl..."
-    curl -o /usr/local/bin/kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.29.0/2023-11-07/bin/linux/amd64/kubectl
-    chmod +x /usr/local/bin/kubectl
-
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    sudo chmod +x kubectl
+    sudo mv kubectl /usr/local/bin/
     echo "Verifying kubectl installation..."
     kubectl version --client || echo "kubectl installation failed."
 
