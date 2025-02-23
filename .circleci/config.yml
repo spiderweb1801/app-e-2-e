@@ -197,6 +197,14 @@ commands:
             kubectl delete pod -n hello-world --all
     #         kubectl rollout restart deployment hello-world -n hello-world
 
+  delete-configmaps:
+    steps:
+      - run:
+          name: Delete configmaps hello-world namespace to recreate new ones
+          command: |
+            kubectl delete configmap aws-auth
+
+
   # recreate-deployment:
     # steps:
     #   - run:
@@ -329,7 +337,8 @@ jobs:
       - image: circleci/python:latest
     steps:
       - common
-      - delete-pods
+      # - delete-pods
+      - delete-configmaps
 
   delete-k8s-all:
     docker:
