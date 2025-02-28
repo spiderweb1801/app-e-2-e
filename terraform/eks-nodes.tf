@@ -1,6 +1,6 @@
 resource "aws_launch_template" "eks_node_group" {
   for_each = local.node_groups
-  name = "${each.value}_template"
+  name     = "${each.value}_template"
 
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -26,33 +26,33 @@ resource "aws_launch_template" "eks_node_group" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name                                = "${each.value}_node"
-      "alpha.eksctl.io/nodegroup-name"    = each.value
-      "alpha.eksctl.io/nodegroup-type"    = "managed"
+      Name                             = "${each.value}_node"
+      "alpha.eksctl.io/nodegroup-name" = each.value
+      "alpha.eksctl.io/nodegroup-type" = "managed"
     }
   }
 
   tag_specifications {
     resource_type = "volume"
     tags = {
-      Name                                = "${each.value}_node"
-      "alpha.eksctl.io/nodegroup-name"    = each.value
-      "alpha.eksctl.io/nodegroup-type"    = "managed"
+      Name                             = "${each.value}_node"
+      "alpha.eksctl.io/nodegroup-name" = each.value
+      "alpha.eksctl.io/nodegroup-type" = "managed"
     }
   }
 
   tag_specifications {
     resource_type = "network-interface"
     tags = {
-      Name                                = "${each.value}_node"
-      "alpha.eksctl.io/nodegroup-name"    = each.value
-      "alpha.eksctl.io/nodegroup-type"    = "managed"
+      Name                             = "${each.value}_node"
+      "alpha.eksctl.io/nodegroup-name" = each.value
+      "alpha.eksctl.io/nodegroup-type" = "managed"
     }
   }
 }
 
 resource "aws_eks_node_group" "eks_node" {
-  for_each = local.node_groups
+  for_each        = local.node_groups
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = each.value
   node_role_arn   = aws_iam_role.node_instance_role.arn

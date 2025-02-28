@@ -44,19 +44,19 @@ resource "aws_iam_role" "eks_node_role1" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      "Action": [
-            "sts:AssumeRoleWithWebIdentity"
-          ],
-          "Condition": {
-            "StringEquals": {
-              "oidc.eks.us-east-1.amazonaws.com/id/6C6C5339FAFB5CA340A5D110601225D4:aud": "sts.amazonaws.com",
-              "oidc.eks.us-east-1.amazonaws.com/id/6C6C5339FAFB5CA340A5D110601225D4:sub": "system:serviceaccount:default:ecr-access-sa"
-            }
-          },
-          "Effect": "Allow",
-          "Principal": {
-            "Federated": "arn:aws:iam::183631319967:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/6C6C5339FAFB5CA340A5D110601225D4"
-          }
+      "Action" : [
+        "sts:AssumeRoleWithWebIdentity"
+      ],
+      "Condition" : {
+        "StringEquals" : {
+          "oidc.eks.us-east-1.amazonaws.com/id/6C6C5339FAFB5CA340A5D110601225D4:aud" : "sts.amazonaws.com",
+          "oidc.eks.us-east-1.amazonaws.com/id/6C6C5339FAFB5CA340A5D110601225D4:sub" : "system:serviceaccount:default:ecr-access-sa"
+        }
+      },
+      "Effect" : "Allow",
+      "Principal" : {
+        "Federated" : "arn:aws:iam::183631319967:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/6C6C5339FAFB5CA340A5D110601225D4"
+      }
     }]
   })
 }
@@ -75,7 +75,7 @@ resource "aws_iam_role_policy_attachment" "eks_container_registry_role2" {
 
 resource "aws_iam_role" "node_instance_role" {
   name = "my-node-instance-role"
-  
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -115,8 +115,8 @@ resource "aws_iam_policy" "ebs_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "ec2:CreateSnapshot",
           "ec2:AttachVolume",
           "ec2:DetachVolume",
@@ -131,8 +131,8 @@ resource "aws_iam_policy" "ebs_policy" {
         Resource = "*"
       },
       {
-        Effect   = "Allow"
-        Action   = ["ec2:CreateTags"]
+        Effect = "Allow"
+        Action = ["ec2:CreateTags"]
         Condition = {
           StringEquals = {
             "ec2:CreateAction" = ["CreateVolume", "CreateSnapshot"]
@@ -144,16 +144,16 @@ resource "aws_iam_policy" "ebs_policy" {
         ]
       },
       {
-        Effect   = "Allow"
-        Action   = ["ec2:DeleteTags"]
+        Effect = "Allow"
+        Action = ["ec2:DeleteTags"]
         Resource = [
           "arn:aws:ec2:*:*:volume/*",
           "arn:aws:ec2:*:*:snapshot/*"
         ]
       },
       {
-        Effect   = "Allow"
-        Action   = ["ec2:CreateVolume"]
+        Effect = "Allow"
+        Action = ["ec2:CreateVolume"]
         Condition = {
           StringLike = {
             "aws:RequestTag/ebs.csi.aws.com/cluster" = "true"
@@ -162,8 +162,8 @@ resource "aws_iam_policy" "ebs_policy" {
         Resource = "*"
       },
       {
-        Effect   = "Allow"
-        Action   = ["ec2:CreateVolume"]
+        Effect = "Allow"
+        Action = ["ec2:CreateVolume"]
         Condition = {
           StringLike = {
             "aws:RequestTag/CSIVolumeName" = "*"
@@ -172,8 +172,8 @@ resource "aws_iam_policy" "ebs_policy" {
         Resource = "*"
       },
       {
-        Effect   = "Allow"
-        Action   = ["ec2:DeleteVolume"]
+        Effect = "Allow"
+        Action = ["ec2:DeleteVolume"]
         Condition = {
           StringLike = {
             "ec2:ResourceTag/ebs.csi.aws.com/cluster" = "true"
@@ -182,8 +182,8 @@ resource "aws_iam_policy" "ebs_policy" {
         Resource = "*"
       },
       {
-        Effect   = "Allow"
-        Action   = ["ec2:DeleteVolume"]
+        Effect = "Allow"
+        Action = ["ec2:DeleteVolume"]
         Condition = {
           StringLike = {
             "ec2:ResourceTag/CSIVolumeName" = "*"
@@ -192,8 +192,8 @@ resource "aws_iam_policy" "ebs_policy" {
         Resource = "*"
       },
       {
-        Effect   = "Allow"
-        Action   = ["ec2:DeleteVolume"]
+        Effect = "Allow"
+        Action = ["ec2:DeleteVolume"]
         Condition = {
           StringLike = {
             "ec2:ResourceTag/kubernetes.io/created-for/pvc/name" = "*"
@@ -202,8 +202,8 @@ resource "aws_iam_policy" "ebs_policy" {
         Resource = "*"
       },
       {
-        Effect   = "Allow"
-        Action   = ["ec2:DeleteSnapshot"]
+        Effect = "Allow"
+        Action = ["ec2:DeleteSnapshot"]
         Condition = {
           StringLike = {
             "ec2:ResourceTag/CSIVolumeSnapshotName" = "*"
@@ -212,8 +212,8 @@ resource "aws_iam_policy" "ebs_policy" {
         Resource = "*"
       },
       {
-        Effect   = "Allow"
-        Action   = ["ec2:DeleteSnapshot"]
+        Effect = "Allow"
+        Action = ["ec2:DeleteSnapshot"]
         Condition = {
           StringLike = {
             "ec2:ResourceTag/ebs.csi.aws.com/cluster" = "true"
@@ -233,7 +233,7 @@ resource "aws_iam_role_policy_attachment" "ebs_policy_attachment" {
 resource "aws_iam_policy" "efs_policy" {
   name        = "node-group-PolicyEFS"
   description = "Policy to allow full access to Amazon EFS"
-  policy      = jsonencode({
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -253,12 +253,12 @@ resource "aws_iam_role_policy_attachment" "efs_policy_attachment" {
 resource "aws_iam_policy" "efsec2_policy" {
   name        = "node-group-PolicyEFSEC2"
   description = "Policy to allow EC2 network interface and subnet operations for EFS"
-  policy      = jsonencode({
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "ec2:DescribeSubnets",
           "ec2:CreateNetworkInterface",
           "ec2:DescribeNetworkInterfaces",

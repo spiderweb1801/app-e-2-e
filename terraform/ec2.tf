@@ -32,25 +32,25 @@
 #   user_data = file("${path.module}/userdata.sh")
 
 
-  # user_data = <<-EOF
-  #   #!/bin/bash
-  #   set -e  # Exit immediately if a command exits with a non-zero status
+# user_data = <<-EOF
+#   #!/bin/bash
+#   set -e  # Exit immediately if a command exits with a non-zero status
 
-  #   echo "Updating system packages..."
-  #   yum update -y
+#   echo "Updating system packages..."
+#   yum update -y
 
-  #   echo "Installing kubectl..."
-  #   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-  #   sudo chmod +x kubectl
-  #   sudo mv kubectl /usr/local/bin/
-  #   echo "Verifying kubectl installation..."
-  #   kubectl version --client || echo "kubectl installation failed."
+#   echo "Installing kubectl..."
+#   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+#   sudo chmod +x kubectl
+#   sudo mv kubectl /usr/local/bin/
+#   echo "Verifying kubectl installation..."
+#   kubectl version --client || echo "kubectl installation failed."
 
-  #   echo "Installation complete."
+#   echo "Installation complete."
 
-  #   echo "Configuring EKS access."
-  #   aws eks update-kubeconfig --name hello-world-cluster --region ap-south-1 --alias eks-cluster
-  # EOF
+#   echo "Configuring EKS access."
+#   aws eks update-kubeconfig --name hello-world-cluster --region ap-south-1 --alias eks-cluster
+# EOF
 
 #   tags = {
 #     Name = "Terraform-EC2-Bastion-Host"
