@@ -383,7 +383,7 @@ workflows:
     when: << pipeline.parameters.destroy_infra >>
     jobs:
       # - terraform-destroy
-      - delete-k8s-all
+      # - delete-k8s-all
       - terraform-destroy:
           requires:
             - delete-k8s-all
