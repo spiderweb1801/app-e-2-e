@@ -1,57 +1,53 @@
-# resource "aws_launch_template" "eks_node_group" {
-#   for_each = local.node_groups
-#   name     = "${each.value}_template"
+resource "aws_launch_template" "eks_node_group" {
+  name     = "eks_template"
 
-#   block_device_mappings {
-#     device_name = "/dev/xvda"
-#     ebs {
-#       volume_size = 20
-#       volume_type = "gp3"
-#       iops        = 3000
-#       throughput  = 125
-#     }
-#   }
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = 20
+      volume_type = "gp3"
+      iops        = 3000
+      throughput  = 125
+    }
+  }
 
-#   image_id = var.eks_node_ami
+  image_id = var.eks_node_ami
 
-#   metadata_options {
-#     http_tokens                 = "required"
-#     http_put_response_hop_limit = 2
-#   }
+  metadata_options {
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
+  }
 
-#   network_interfaces {
-#     security_groups = [
-#       aws_security_group.eks_sg.id
-#     ]
-#   }
+  network_interfaces {
+    security_groups = [
+      aws_security_group.eks_sg.id
+    ]
+  }
 
-#   tag_specifications {
-#     resource_type = "instance"
-#     tags = {
-#       Name                             = "${each.value}_node"
-#       "alpha.eksctl.io/nodegroup-name" = each.value
-#       "alpha.eksctl.io/nodegroup-type" = "managed"
-#     }
-#   }
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name                             = "eks_node"
+      "alpha.eksctl.io/nodegroup-type" = "managed"
+    }
+  }
 
-#   tag_specifications {
-#     resource_type = "volume"
-#     tags = {
-#       Name                             = "${each.value}_node"
-#       "alpha.eksctl.io/nodegroup-name" = each.value
-#       "alpha.eksctl.io/nodegroup-type" = "managed"
-#     }
-#   }
+  tag_specifications {
+    resource_type = "volume"
+    tags = {
+      Name                             = "eks_node"
+      "alpha.eksctl.io/nodegroup-type" = "managed"
+    }
+  }
 
-#   tag_specifications {
-#     resource_type = "network-interface"
-#     tags = {
-#       Name                             = "${each.value}_node"
-#       "alpha.eksctl.io/nodegroup-name" = each.value
-#       "alpha.eksctl.io/nodegroup-type" = "managed"
-#     }
-#   }
-# }
+  tag_specifications {
+    resource_type = "network-interface"
+    tags = {
+      Name                             = "eks_node"
+      "alpha.eksctl.io/nodegroup-type" = "managed"
+    }
+  }
+}
 
 # resource "aws_eks_node_group" "eks_node" {
 #   for_each        = local.node_groups
