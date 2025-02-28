@@ -37,3 +37,8 @@ variable "ami" {
   type    = string
   default = "ami-001fa4fe00c43b5f6"
 }
+
+variable "eks_node_ami" {
+  type    = string
+  default = "ami-002c8f09d560aa82e"
+}

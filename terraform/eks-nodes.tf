@@ -12,6 +12,8 @@ resource "aws_launch_template" "eks_node_group" {
     }
   }
 
+  image_id = var.eks_node_ami
+
   metadata_options {
     http_tokens                 = "required"
     http_put_response_hop_limit = 2
