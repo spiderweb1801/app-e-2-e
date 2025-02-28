@@ -52,7 +52,7 @@
 resource "aws_eks_node_group" "eks_node" {
   for_each        = local.node_groups
   cluster_name    = aws_eks_cluster.eks_cluster.name
-  node_group_name = each.value
+  node_group_name = "${each.value}-ng"
   node_role_arn   = aws_iam_role.node_instance_role.arn
   subnet_ids      = each.key == "private" ? [for i in aws_subnet.private_subnets : i.id] : [for i in aws_subnet.public_subnets : i.id] # Update with your VPC subnets
   instance_types  = ["t3.medium"]
@@ -96,3 +96,4 @@ resource "aws_security_group" "eks_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
