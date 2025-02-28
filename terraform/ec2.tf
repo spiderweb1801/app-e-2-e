@@ -29,26 +29,28 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
   subnet_id              = aws_subnet.public_subnets["subnet1"].id
   iam_instance_profile   = "temp-ec2-eks"
+  user_data = file("${path.module}/userdata.sh")
 
-  user_data = <<-EOF
-    #!/bin/bash
-    set -e  # Exit immediately if a command exits with a non-zero status
 
-    echo "Updating system packages..."
-    yum update -y
+  # user_data = <<-EOF
+  #   #!/bin/bash
+  #   set -e  # Exit immediately if a command exits with a non-zero status
 
-    echo "Installing kubectl..."
-    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    sudo chmod +x kubectl
-    sudo mv kubectl /usr/local/bin/
-    echo "Verifying kubectl installation..."
-    kubectl version --client || echo "kubectl installation failed."
+  #   echo "Updating system packages..."
+  #   yum update -y
 
-    echo "Installation complete."
+  #   echo "Installing kubectl..."
+  #   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  #   sudo chmod +x kubectl
+  #   sudo mv kubectl /usr/local/bin/
+  #   echo "Verifying kubectl installation..."
+  #   kubectl version --client || echo "kubectl installation failed."
 
-    echo "Configuring EKS access."
-    aws eks update-kubeconfig --name hello-world-cluster --region ap-south-1 --alias eks-cluster
-  EOF
+  #   echo "Installation complete."
+
+  #   echo "Configuring EKS access."
+  #   aws eks update-kubeconfig --name hello-world-cluster --region ap-south-1 --alias eks-cluster
+  # EOF
 
   tags = {
     Name = "Terraform-EC2-Bastion-Host"
