@@ -173,9 +173,11 @@ commands:
               kubectl get pods -A
               echo "==============================="
               echo "====kubectl get services -A===="
+              echo "####################### Use the DNS below to test #################"
               echo "==============================="
               kubectl get services -A
               echo "================================"
+              echo "####################### Use the DNS below to test #################"
               echo "====kubectl describe pods -A===="
               echo "================================"
               kubectl describe pods -A
@@ -188,9 +190,7 @@ commands:
               echo "==========================================================="
               aws eks describe-cluster --name hello-world-cluster
               echo "=========================="
-              echo "====kubectl get svc -A===="
-              echo "=========================="
-              kubectl get svc -A
+
 
   common:
     steps:
