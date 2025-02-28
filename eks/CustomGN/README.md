@@ -9,11 +9,16 @@ When you run the command:
 eksctl create cluster -f eks-cluster-manifest.yaml
 ```
 
-It triggers the creation of an Amazon EKS cluster resources using a CloudFormation template. This template provisions all the necessary resources, including:
+It triggers the creation of an Amazon EKS cluster resources using the CloudFormation templates.  Following are the cloudofrmation templates that get created and used:
+cf1-resources1.yaml
+cf1-resources2.yaml
+cf1-resources3.yaml
+cf1-resources4.yaml
+cf1-resources5.yaml
 
 # AWS CloudFormation Template for EKS Cluster
 
-## Overview
+## Overview for cf1-resources1.yaml
 This AWS CloudFormation template provisions an Amazon EKS (Elastic Kubernetes Service) cluster along with the necessary networking and IAM components. It sets up a dedicated VPC, subnets, security groups, and IAM roles required for managing the EKS cluster.
 
 ## Features
