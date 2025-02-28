@@ -70,7 +70,7 @@ resource "aws_eks_node_group" "eks_node" {
   }
   launch_template {
     id      = aws_launch_template.eks_node_group[each.key].id
-    version = "$Latest"
+    version = aws_launch_template.eks_node_group[each.key].latest_version
   }
   depends_on = [
     aws_iam_role_policy_attachment.ebs_policy_attachment,
