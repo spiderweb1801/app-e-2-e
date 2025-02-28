@@ -19,7 +19,7 @@ resource "aws_launch_template" "eks_node_group" {
 
   network_interfaces {
     security_groups = [
-      "${data.aws_ssm_parameter.cluster_security_group_id.value}"
+      aws_security_group.eks_sg.id
     ]
   }
 
@@ -74,4 +74,26 @@ resource "aws_eks_node_group" "eks_node" {
     aws_iam_role_policy_attachment.efs_policy_attachment,
     aws_iam_role_policy_attachment.efsec2_policy_attachment
   ]
+}
+
+# worked node security group
+
+resource "aws_security_group" "eks_sg" {
+  name        = "EKSSecurityGroup"
+  description = "Communication between the control plane and worker nodegroups"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"] # Open to all (change for security)
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
