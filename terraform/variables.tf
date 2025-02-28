@@ -25,6 +25,10 @@ locals {
         availability_zone = "${data.aws_region.current.name}b"
       }
     }
+  },
+  node_groups = {
+    "public" = "public-eks-managed-nodes"
+    "private" = "private-eks-managed-nodes"
   }
 }
 

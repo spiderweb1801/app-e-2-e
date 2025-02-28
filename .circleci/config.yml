@@ -124,6 +124,7 @@ commands:
           name: Create EKS cluster using EKSCTL
           command: |
             eksctl create cluster -f <<parameters.eks-filename>>
+  
   update-eks-kube-config:
     steps:
         - run:
@@ -314,7 +315,7 @@ jobs:
       - run:
           name: Build & Push Docker Image
           command: |
-            docker build -t hello-world .
+            docker build -t ../hello-world .
             docker tag hello-world:latest 183631319967.dkr.ecr.ap-south-1.amazonaws.com/hello-world:latest
             docker push 183631319967.dkr.ecr.ap-south-1.amazonaws.com/hello-world:latest
 
@@ -330,8 +331,8 @@ jobs:
             kubectl apply -f k8s/deployment.yaml
             kubectl apply -f k8s/service.yaml
             kubectl apply -f k8s/configmap.yaml
-            kubectl apply -f k8s/ingress.yaml
-            kubectl apply -f k8s/alb-controller.yaml
+            # kubectl apply -f k8s/ingress.yaml
+            # kubectl apply -f k8s/alb-controller.yaml
       - verify-eks
 
   verify-deployments:

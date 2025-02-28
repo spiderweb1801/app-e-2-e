@@ -1,29 +1,62 @@
-resource "aws_eks_node_group" "eks_nodes_private" {
-  cluster_name    = aws_eks_cluster.eks_cluster.name
-  node_group_name = "private-eks-managed-nodes"
-  node_role_arn   = aws_iam_role.eks_node_role.arn
-  subnet_ids      = [for i in aws_subnet.private_subnets : i.id] # Update with your VPC subnets
-  instance_types  = ["t3.medium"]
-  scaling_config {
-    desired_size = 1
-    max_size     = 2
-    min_size     = 1
+resource "aws_launch_template" "eks_node_group" {
+  for_each = local.node_groups
+  name = "${each.value}_template"
+
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = 20
+      volume_type = "gp3"
+      iops        = 3000
+      throughput  = 125
+    }
   }
-  update_config {
-    max_unavailable = 1
+
+  metadata_options {
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
   }
-  depends_on = [
-    aws_iam_role_policy_attachment.eks_worker_node,
-    aws_iam_role_policy_attachment.eks_cni_policy,
-    aws_iam_role_policy_attachment.eks_container_registry,
-  ]
+
+  network_interfaces {
+    security_groups = [
+      "${data.aws_ssm_parameter.cluster_security_group_id.value}"
+    ]
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name                                = "${each.value}_node"
+      "alpha.eksctl.io/nodegroup-name"    = each.value
+      "alpha.eksctl.io/nodegroup-type"    = "managed"
+    }
+  }
+
+  tag_specifications {
+    resource_type = "volume"
+    tags = {
+      Name                                = "${each.value}_node"
+      "alpha.eksctl.io/nodegroup-name"    = each.value
+      "alpha.eksctl.io/nodegroup-type"    = "managed"
+    }
+  }
+
+  tag_specifications {
+    resource_type = "network-interface"
+    tags = {
+      Name                                = "${each.value}_node"
+      "alpha.eksctl.io/nodegroup-name"    = each.value
+      "alpha.eksctl.io/nodegroup-type"    = "managed"
+    }
+  }
 }
 
-resource "aws_eks_node_group" "eks_nodes_public" {
+resource "aws_eks_node_group" "eks_node" {
+  for_each = local.node_groups
   cluster_name    = aws_eks_cluster.eks_cluster.name
-  node_group_name = "public-eks-managed-nodes"
-  node_role_arn   = aws_iam_role.eks_node_role.arn
-  subnet_ids      = [for i in aws_subnet.public_subnets : i.id] # Update with your VPC subnets
+  node_group_name = each.value
+  node_role_arn   = aws_iam_role.node_instance_role.arn
+  subnet_ids      = each.key == "private" ? [for i in aws_subnet.private_subnets : i.id] : [for i in aws_subnet.public_subnets : i.id] # Update with your VPC subnets
   instance_types  = ["t3.medium"]
   scaling_config {
     desired_size = 1
@@ -33,9 +66,12 @@ resource "aws_eks_node_group" "eks_nodes_public" {
   update_config {
     max_unavailable = 1
   }
+  launch_template {
+    id = aws_launch_template.eks_node_group[each.key].id
+  }
   depends_on = [
-    aws_iam_role_policy_attachment.eks_worker_node,
-    aws_iam_role_policy_attachment.eks_cni_policy,
-    aws_iam_role_policy_attachment.eks_container_registry,
+    aws_iam_role_policy_attachment.ebs_policy_attachment,
+    aws_iam_role_policy_attachment.efs_policy_attachment,
+    aws_iam_role_policy_attachment.efsec2_policy_attachment
   ]
 }
