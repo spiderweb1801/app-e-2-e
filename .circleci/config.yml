@@ -115,6 +115,15 @@ commands:
               sudo mv kubectl /usr/local/bin/
               kubectl version --client
 
+  eks-cli:
+    parameters:
+      eks-filename:
+        type: string
+    steps:
+      - run:
+          name: Create EKS cluster using EKSCTL
+          command: |
+            eksctl create cluster -f <<parameters.eks-filename>>
   update-eks-kube-config:
     steps:
         - run:

@@ -1,0 +1,714 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "EKS Managed Nodes (SSH access: false) [created by eksctl]",
+  "Mappings": {
+    "ServicePrincipalPartitionMap": {
+      "aws": {
+        "EC2": "ec2.amazonaws.com",
+        "EKS": "eks.amazonaws.com",
+        "EKSFargatePods": "eks-fargate-pods.amazonaws.com",
+        "IRA": "rolesanywhere.amazonaws.com",
+        "SSM": "ssm.amazonaws.com"
+      },
+      "aws-cn": {
+        "EC2": "ec2.amazonaws.com.cn",
+        "EKS": "eks.amazonaws.com",
+        "EKSFargatePods": "eks-fargate-pods.amazonaws.com"
+      },
+      "aws-iso": {
+        "EC2": "ec2.c2s.ic.gov",
+        "EKS": "eks.amazonaws.com",
+        "EKSFargatePods": "eks-fargate-pods.amazonaws.com"
+      },
+      "aws-iso-b": {
+        "EC2": "ec2.sc2s.sgov.gov",
+        "EKS": "eks.amazonaws.com",
+        "EKSFargatePods": "eks-fargate-pods.amazonaws.com"
+      },
+      "aws-iso-e": {
+        "EC2": "ec2.amazonaws.com",
+        "EKS": "eks.amazonaws.com",
+        "EKSFargatePods": "eks-fargate-pods.amazonaws.com"
+      },
+      "aws-iso-f": {
+        "EC2": "ec2.amazonaws.com",
+        "EKS": "eks.amazonaws.com",
+        "EKSFargatePods": "eks-fargate-pods.amazonaws.com"
+      },
+      "aws-us-gov": {
+        "EC2": "ec2.amazonaws.com",
+        "EKS": "eks.amazonaws.com",
+        "EKSFargatePods": "eks-fargate-pods.amazonaws.com",
+        "IRA": "rolesanywhere.amazonaws.com",
+        "SSM": "ssm.amazonaws.com"
+      }
+    }
+  },
+  "Resources": {
+    "LaunchTemplate": {
+      "Type": "AWS::EC2::LaunchTemplate",
+      "Properties": {
+        "LaunchTemplateData": {
+          "BlockDeviceMappings": [
+            {
+              "DeviceName": "/dev/xvda",
+              "Ebs": {
+                "Iops": 3000,
+                "Throughput": 125,
+                "VolumeSize": 20,
+                "VolumeType": "gp3"
+              }
+            }
+          ],
+          "MetadataOptions": {
+            "HttpPutResponseHopLimit": 2,
+            "HttpTokens": "required"
+          },
+          "SecurityGroupIds": [
+            {
+              "Fn::ImportValue": "eksctl-my-eks-cluster-cluster::ClusterSecurityGroupId"
+            }
+          ],
+          "TagSpecifications": [
+            {
+              "ResourceType": "instance",
+              "Tags": [
+                {
+                  "Key": "Name",
+                  "Value": "my-eks-cluster-node-group-2-Node"
+                },
+                {
+                  "Key": "alpha.eksctl.io/nodegroup-name",
+                  "Value": "node-group-2"
+                },
+                {
+                  "Key": "alpha.eksctl.io/nodegroup-type",
+                  "Value": "managed"
+                }
+              ]
+            },
+            {
+              "ResourceType": "volume",
+              "Tags": [
+                {
+                  "Key": "Name",
+                  "Value": "my-eks-cluster-node-group-2-Node"
+                },
+                {
+                  "Key": "alpha.eksctl.io/nodegroup-name",
+                  "Value": "node-group-2"
+                },
+                {
+                  "Key": "alpha.eksctl.io/nodegroup-type",
+                  "Value": "managed"
+                }
+              ]
+            },
+            {
+              "ResourceType": "network-interface",
+              "Tags": [
+                {
+                  "Key": "Name",
+                  "Value": "my-eks-cluster-node-group-2-Node"
+                },
+                {
+                  "Key": "alpha.eksctl.io/nodegroup-name",
+                  "Value": "node-group-2"
+                },
+                {
+                  "Key": "alpha.eksctl.io/nodegroup-type",
+                  "Value": "managed"
+                }
+              ]
+            }
+          ]
+        },
+        "LaunchTemplateName": {
+          "Fn::Sub": "${AWS::StackName}"
+        }
+      }
+    },
+    "ManagedNodeGroup": {
+      "Type": "AWS::EKS::Nodegroup",
+      "Properties": {
+        "AmiType": "AL2_x86_64",
+        "ClusterName": "my-eks-cluster",
+        "InstanceTypes": [
+          "t3.medium"
+        ],
+        "Labels": {
+          "alpha.eksctl.io/cluster-name": "my-eks-cluster",
+          "alpha.eksctl.io/nodegroup-name": "node-group-2"
+        },
+        "LaunchTemplate": {
+          "Id": {
+            "Ref": "LaunchTemplate"
+          }
+        },
+        "NodeRole": {
+          "Fn::GetAtt": [
+            "NodeInstanceRole",
+            "Arn"
+          ]
+        },
+        "NodegroupName": "node-group-2",
+        "ScalingConfig": {
+          "DesiredSize": 1,
+          "MaxSize": 2,
+          "MinSize": 1
+        },
+        "Subnets": [
+          "subnet-0fd5f6e21212acc54",
+          "subnet-0986a0f8e45bce5c0"
+        ],
+        "Tags": {
+          "alpha.eksctl.io/nodegroup-name": "node-group-2",
+          "alpha.eksctl.io/nodegroup-type": "managed"
+        }
+      }
+    },
+    "NodeInstanceRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  {
+                    "Fn::FindInMap": [
+                      "ServicePrincipalPartitionMap",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      "EC2"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+          },
+          {
+            "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+          },
+          {
+            "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+          },
+          {
+            "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/AmazonSSMManagedInstanceCore"
+          }
+        ],
+        "Path": "/",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Sub": "${AWS::StackName}/NodeInstanceRole"
+            }
+          }
+        ]
+      }
+    },
+    "PolicyAWSLoadBalancerController": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "iam:CreateServiceLinkedRole"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "iam:AWSServiceName": "elasticloadbalancing.amazonaws.com"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "ec2:DescribeAccountAttributes",
+                "ec2:DescribeAddresses",
+                "ec2:DescribeAvailabilityZones",
+                "ec2:DescribeInternetGateways",
+                "ec2:DescribeVpcs",
+                "ec2:DescribeVpcPeeringConnections",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeInstances",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DescribeTags",
+                "ec2:GetCoipPoolUsage",
+                "ec2:DescribeCoipPools",
+                "elasticloadbalancing:DescribeLoadBalancers",
+                "elasticloadbalancing:DescribeLoadBalancerAttributes",
+                "elasticloadbalancing:DescribeListeners",
+                "elasticloadbalancing:DescribeListenerAttributes",
+                "elasticloadbalancing:DescribeListenerCertificates",
+                "elasticloadbalancing:DescribeSSLPolicies",
+                "elasticloadbalancing:DescribeRules",
+                "elasticloadbalancing:DescribeTargetGroups",
+                "elasticloadbalancing:DescribeTargetGroupAttributes",
+                "elasticloadbalancing:DescribeTargetHealth",
+                "elasticloadbalancing:DescribeTags"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "cognito-idp:DescribeUserPoolClient",
+                "acm:ListCertificates",
+                "acm:DescribeCertificate",
+                "iam:ListServerCertificates",
+                "iam:GetServerCertificate",
+                "waf-regional:GetWebACL",
+                "waf-regional:GetWebACLForResource",
+                "waf-regional:AssociateWebACL",
+                "waf-regional:DisassociateWebACL",
+                "wafv2:GetWebACL",
+                "wafv2:GetWebACLForResource",
+                "wafv2:AssociateWebACL",
+                "wafv2:DisassociateWebACL",
+                "shield:GetSubscriptionState",
+                "shield:DescribeProtection",
+                "shield:CreateProtection",
+                "shield:DeleteProtection"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:RevokeSecurityGroupIngress"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "ec2:CreateSecurityGroup"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "ec2:CreateTags"
+              ],
+              "Condition": {
+                "Null": {
+                  "aws:RequestTag/elbv2.k8s.aws/cluster": "false"
+                },
+                "StringEquals": {
+                  "ec2:CreateAction": "CreateSecurityGroup"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Sub": "arn:${AWS::Partition}:ec2:*:*:security-group/*"
+              }
+            },
+            {
+              "Action": [
+                "ec2:CreateTags",
+                "ec2:DeleteTags"
+              ],
+              "Condition": {
+                "Null": {
+                  "aws:RequestTag/elbv2.k8s.aws/cluster": "true",
+                  "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Sub": "arn:${AWS::Partition}:ec2:*:*:security-group/*"
+              }
+            },
+            {
+              "Action": [
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:RevokeSecurityGroupIngress",
+                "ec2:DeleteSecurityGroup"
+              ],
+              "Condition": {
+                "Null": {
+                  "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "elasticloadbalancing:CreateLoadBalancer",
+                "elasticloadbalancing:CreateTargetGroup"
+              ],
+              "Condition": {
+                "Null": {
+                  "aws:RequestTag/elbv2.k8s.aws/cluster": "false"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "elasticloadbalancing:CreateListener",
+                "elasticloadbalancing:DeleteListener",
+                "elasticloadbalancing:CreateRule",
+                "elasticloadbalancing:DeleteRule"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "elasticloadbalancing:AddTags",
+                "elasticloadbalancing:RemoveTags"
+              ],
+              "Condition": {
+                "Null": {
+                  "aws:RequestTag/elbv2.k8s.aws/cluster": "true",
+                  "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:elasticloadbalancing:*:*:targetgroup/*/*"
+                },
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:elasticloadbalancing:*:*:loadbalancer/net/*/*"
+                },
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:elasticloadbalancing:*:*:loadbalancer/app/*/*"
+                }
+              ]
+            },
+            {
+              "Action": [
+                "elasticloadbalancing:AddTags",
+                "elasticloadbalancing:RemoveTags"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:elasticloadbalancing:*:*:listener/net/*/*/*"
+                },
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:elasticloadbalancing:*:*:listener/app/*/*/*"
+                },
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:elasticloadbalancing:*:*:listener-rule/net/*/*/*"
+                },
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:elasticloadbalancing:*:*:listener-rule/app/*/*/*"
+                }
+              ]
+            },
+            {
+              "Action": [
+                "elasticloadbalancing:ModifyListenerAttributes",
+                "elasticloadbalancing:ModifyLoadBalancerAttributes",
+                "elasticloadbalancing:SetIpAddressType",
+                "elasticloadbalancing:SetSecurityGroups",
+                "elasticloadbalancing:SetSubnets",
+                "elasticloadbalancing:DeleteLoadBalancer",
+                "elasticloadbalancing:ModifyTargetGroup",
+                "elasticloadbalancing:ModifyTargetGroupAttributes",
+                "elasticloadbalancing:DeleteTargetGroup"
+              ],
+              "Condition": {
+                "Null": {
+                  "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "elasticloadbalancing:AddTags"
+              ],
+              "Condition": {
+                "Null": {
+                  "aws:RequestTag/elbv2.k8s.aws/cluster": "false"
+                },
+                "StringEquals": {
+                  "elasticloadbalancing:CreateAction": [
+                    "CreateTargetGroup",
+                    "CreateLoadBalancer"
+                  ]
+                }
+              },
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:elasticloadbalancing:*:*:targetgroup/*/*"
+                },
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:elasticloadbalancing:*:*:loadbalancer/net/*/*"
+                },
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:elasticloadbalancing:*:*:loadbalancer/app/*/*"
+                }
+              ]
+            },
+            {
+              "Action": [
+                "elasticloadbalancing:RegisterTargets",
+                "elasticloadbalancing:DeregisterTargets"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Sub": "arn:${AWS::Partition}:elasticloadbalancing:*:*:targetgroup/*/*"
+              }
+            },
+            {
+              "Action": [
+                "elasticloadbalancing:SetWebAcl",
+                "elasticloadbalancing:ModifyListener",
+                "elasticloadbalancing:AddListenerCertificates",
+                "elasticloadbalancing:RemoveListenerCertificates",
+                "elasticloadbalancing:ModifyRule"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": {
+          "Fn::Sub": "${AWS::StackName}-PolicyAWSLoadBalancerController"
+        },
+        "Roles": [
+          {
+            "Ref": "NodeInstanceRole"
+          }
+        ]
+      }
+    },
+    "PolicyEBS": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ec2:CreateSnapshot",
+                "ec2:AttachVolume",
+                "ec2:DetachVolume",
+                "ec2:ModifyVolume",
+                "ec2:DescribeAvailabilityZones",
+                "ec2:DescribeInstances",
+                "ec2:DescribeSnapshots",
+                "ec2:DescribeTags",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeVolumesModifications"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "ec2:CreateTags"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "ec2:CreateAction": [
+                    "CreateVolume",
+                    "CreateSnapshot"
+                  ]
+                }
+              },
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:ec2:*:*:volume/*"
+                },
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:ec2:*:*:snapshot/*"
+                }
+              ]
+            },
+            {
+              "Action": [
+                "ec2:DeleteTags"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:ec2:*:*:volume/*"
+                },
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:ec2:*:*:snapshot/*"
+                }
+              ]
+            },
+            {
+              "Action": [
+                "ec2:CreateVolume"
+              ],
+              "Condition": {
+                "StringLike": {
+                  "aws:RequestTag/ebs.csi.aws.com/cluster": "true"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "ec2:CreateVolume"
+              ],
+              "Condition": {
+                "StringLike": {
+                  "aws:RequestTag/CSIVolumeName": "*"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "ec2:DeleteVolume"
+              ],
+              "Condition": {
+                "StringLike": {
+                  "ec2:ResourceTag/ebs.csi.aws.com/cluster": "true"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "ec2:DeleteVolume"
+              ],
+              "Condition": {
+                "StringLike": {
+                  "ec2:ResourceTag/CSIVolumeName": "*"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "ec2:DeleteVolume"
+              ],
+              "Condition": {
+                "StringLike": {
+                  "ec2:ResourceTag/kubernetes.io/created-for/pvc/name": "*"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "ec2:DeleteSnapshot"
+              ],
+              "Condition": {
+                "StringLike": {
+                  "ec2:ResourceTag/CSIVolumeSnapshotName": "*"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "ec2:DeleteSnapshot"
+              ],
+              "Condition": {
+                "StringLike": {
+                  "ec2:ResourceTag/ebs.csi.aws.com/cluster": "true"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": {
+          "Fn::Sub": "${AWS::StackName}-PolicyEBS"
+        },
+        "Roles": [
+          {
+            "Ref": "NodeInstanceRole"
+          }
+        ]
+      }
+    },
+    "PolicyEFS": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "elasticfilesystem:*"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": {
+          "Fn::Sub": "${AWS::StackName}-PolicyEFS"
+        },
+        "Roles": [
+          {
+            "Ref": "NodeInstanceRole"
+          }
+        ]
+      }
+    },
+    "PolicyEFSEC2": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ec2:DescribeSubnets",
+                "ec2:CreateNetworkInterface",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DeleteNetworkInterface",
+                "ec2:ModifyNetworkInterfaceAttribute",
+                "ec2:DescribeNetworkInterfaceAttribute"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": {
+          "Fn::Sub": "${AWS::StackName}-PolicyEFSEC2"
+        },
+        "Roles": [
+          {
+            "Ref": "NodeInstanceRole"
+          }
+        ]
+      }
+    }
+  }
+}
