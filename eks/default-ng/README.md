@@ -51,3 +51,5 @@ new-cluster     ap-south-1      False
 ~ $ eksctl utils write-kubeconfig --cluster new-cluster --region ap-south-1
 
 kubectl config current-context
+
+kubectl auth can-i create pods/exec

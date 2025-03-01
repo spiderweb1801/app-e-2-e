@@ -210,13 +210,19 @@ commands:
       - run:
           name: Delete all the resources in the cluster
           command: |
-            # kubectl delete all --all -n hello-world
-            # kubectl delete serviceaccount --all -n hello-world
-            kubectl delete deployment aws-load-balancer-controller -n kube-system
-            kubectl delete namespace hello-world
-            kubectl delete clusterrole aws-load-balancer-controller
-            kubectl delete clusterrolebinding aws-load-balancer-controller
-            aws ecr batch-delete-image --repository-name hello-world --region ap-south-1 --image-ids $(aws ecr list-images --repository-name hello-world --region ap-south-1 --query 'imageIds[*]' --output json)
+            # kubectl delete all --all -n <<parameters.ekscluster-name>>
+            # kubectl delete serviceaccount --all -n <<parameters.ekscluster-name>>
+            # kubectl delete deployment aws-load-balancer-controller -n kube-system
+            # kubectl delete namespace <<parameters.ekscluster-name>>
+            # kubectl delete clusterrole aws-load-balancer-controller
+            # kubectl delete clusterrolebinding aws-load-balancer-controller
+            kubectl delete rolebinding -n hello-world
+            kubectl delete configmap -n hello-world
+            kubectl delete service -n hello-world
+            kubectl delete deployment -n hello-world
+            kubectl delete namespace -n hello-world
+            aws ecr list-images --repository-name hello-world --region ap-south-1 --query 'imageIds[*]' --output json | jq -c '{imageIds: .}' | xargs -I {} aws ecr batch-delete-image --repository-name hello-world --region ap-south-1 --cli-input-json '{}'
+
 
 jobs:
   
@@ -306,6 +312,7 @@ jobs:
             kubectl apply -f k8s/deployment.yaml
             kubectl apply -f k8s/service.yaml
             kubectl apply -f k8s/configmap.yaml
+            kubectl apply -f k8s/rolebinding.yaml
       - verify-eks:
           ekscluster-name: new-cluster
 
