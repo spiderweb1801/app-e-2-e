@@ -1,12 +1,17 @@
-# resource "aws_eks_cluster" "eks_cluster" {
-#   name     = "hello-world-cluster"
-#   role_arn = aws_iam_role.eks_role.arn
+# Fetch Latest Amazon EKS-Optimized AMI for the selected Kubernetes version
+data "aws_ssm_parameter" "eks_ami" {
+  name = "/aws/service/eks/optimized-ami/1.27/amazon-linux-2/recommended/image_id"
+}
 
-#   # cluster should be in public subnet. Ideally it has to be in private subnet
-#   vpc_config {
-#     subnet_ids              = concat([for i in aws_subnet.public_subnets : i.id], [for i in aws_subnet.private_subnets : i.id])
-#     endpoint_private_access = "false"
-#     endpoint_public_access  = "true" //In order to access the cluster from internet. Defaults to true.
-#     public_access_cidrs     = ["0.0.0.0/0"]
-#   }
-# }
+# EKS Cluster
+resource "aws_eks_cluster" "eks" {
+  name     = "new-cluster"
+  role_arn = aws_iam_role.eks_cluster_role.arn
+
+  vpc_config {
+    subnet_ids         = concat([for i in aws_subnet.public_subnets : i.id], [for i in aws_subnet.private_subnets : i.id])
+    security_group_ids = [aws_security_group.eks_cluster_sg.id]
+  }
+
+  depends_on = [aws_iam_role_policy_attachment.eks_cluster_AmazonEKSClusterPolicy]
+}

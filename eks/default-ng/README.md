@@ -43,3 +43,11 @@ eksctl internally generates a CloudFormation template, which includes multiple s
 eksctl create cluster --name my-cluster
 OR
 eksctl create cluster -f filename.yaml
+
+~ $ eksctl get cluster
+NAME            REGION          EKSCTL CREATED
+my-eks-cluster  ap-south-1      True
+new-cluster     ap-south-1      False
+~ $ eksctl utils write-kubeconfig --cluster new-cluster --region ap-south-1
+
+kubectl config current-context

@@ -191,36 +191,12 @@ commands:
               aws eks describe-cluster --name hello-world-cluster
               echo "=========================="
 
-
   common:
     steps:
       - checkout
       - aws-authentication-docker
       - install-kubectl
       - update-eks-kube-config
-
-  delete-pods:
-    steps:
-      - run:
-          name: Delete all the pods in hello-world namespace to recreate new ones
-          command: |
-            kubectl delete pod -n hello-world --all
-    #         kubectl rollout restart deployment hello-world -n hello-world
-
-  delete-configmaps:
-    steps:
-      - run:
-          name: Delete configmaps hello-world namespace to recreate new ones
-          command: |
-            kubectl delete configmap aws-auth
-
-
-  # recreate-deployment:
-    # steps:
-    #   - run:
-    #       name: Restart deployment hello-world
-    #       command: |
-    #         kubectl rollout restart deployment hello-world -n hello-world
 
   delete-all:
     steps:
@@ -236,15 +212,7 @@ commands:
             aws ecr batch-delete-image --repository-name hello-world --region ap-south-1 --image-ids $(aws ecr list-images --repository-name hello-world --region ap-south-1 --query 'imageIds[*]' --output json)
 
 jobs:
-  say-hello:
-    docker:
-      - image: cimg/base:current
-    steps:
-      - checkout
-      - run:
-          name: Say Hello
-          command: echo "Hello, World!"
-
+  
   terraform-plan:
     executor: terraform-executor
     working_directory: ~/terraform
@@ -331,8 +299,6 @@ jobs:
             kubectl apply -f k8s/deployment.yaml
             kubectl apply -f k8s/service.yaml
             kubectl apply -f k8s/configmap.yaml
-            # kubectl apply -f k8s/ingress.yaml
-            # kubectl apply -f k8s/alb-controller.yaml
       - verify-eks
 
   verify-deployments:
@@ -341,14 +307,6 @@ jobs:
     steps:
       - common
       - verify-eks
-
-  delete-pods:
-    docker:
-      - image: circleci/python:latest
-    steps:
-      - common
-      # - delete-pods
-      - delete-configmaps
 
   delete-k8s-all:
     docker:
@@ -383,11 +341,6 @@ workflows:
     when: << pipeline.parameters.verify_app >>
     jobs:
       - verify-deployments
-
-  delete-pods:
-    when: << pipeline.parameters.delete_pods >>
-    jobs:
-      - delete-pods
 
   terraform-destroy:
     when: << pipeline.parameters.destroy_infra >>
