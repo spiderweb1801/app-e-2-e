@@ -137,6 +137,9 @@ commands:
               aws eks update-kubeconfig --name <<parameters.ekscluster-name>> --region ap-south-1
 
   verify-eks:
+    parameters:
+      ekscluster-name:
+        type: string
     steps:
         - run:
             name: Kubernetes verification
@@ -159,7 +162,7 @@ commands:
               echo "=============================="
               kubectl get namespaces
               # echo "========================================================================"
-              # echo "====aws eks list-fargate-profiles --cluster-name hello-world-cluster===="
+              # echo "====aws eks list-fargate-profiles --cluster-name <<parameters.ekscluster-name>>===="
               # echo "========================================================================"
               # aws eks list-fargate-profiles --cluster-name hello-world-cluster
               # echo "====================================================================================================================="
@@ -191,7 +194,7 @@ commands:
               echo "==========================================================="
               echo "====aws eks describe-cluster --name hello-world-cluster===="
               echo "==========================================================="
-              aws eks describe-cluster --name hello-world-cluster
+              aws eks describe-cluster --name <<parameters.ekscluster-name>>
               echo "=========================="
 
   common:
