@@ -68,7 +68,7 @@ resource "aws_eks_node_group" "eks_node" {
     max_unavailable = 1
   }
   launch_template {
-    id      = aws_launch_template.eks_node_group[each.key].id
+    id      = aws_launch_template.eks_node_group.id
     version = "$Latest"
   }
   depends_on = [
