@@ -306,14 +306,16 @@ jobs:
             kubectl apply -f k8s/deployment.yaml
             kubectl apply -f k8s/service.yaml
             kubectl apply -f k8s/configmap.yaml
-      - verify-eks
+      - verify-eks:
+          ekscluster-name: new-cluster
 
   verify-deployments:
     docker:
       - image: circleci/python:latest
     steps:
       - common
-      - verify-eks
+      - verify-eks:
+          ekscluster-name: new-cluster
 
   delete-k8s-all:
     docker:
