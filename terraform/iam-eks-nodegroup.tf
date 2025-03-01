@@ -91,13 +91,6 @@ resource "aws_iam_role" "node_instance_role" {
     ]
   })
 
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
-    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-  ]
-
   path = "/"
 
   tags = {
@@ -105,6 +98,15 @@ resource "aws_iam_role" "node_instance_role" {
   }
 }
 
+resource "aws_iam_role_policy_attachments_exclusive" "managed_policies" {
+  role_name  = aws_iam_group.node_instance_role.name
+  policy_arns = [
+      "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser",
+      "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+      "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+      "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    ]
+}
 
 resource "aws_iam_policy" "ebs_policy" {
   name        = "node-group-PolicyEBS"
