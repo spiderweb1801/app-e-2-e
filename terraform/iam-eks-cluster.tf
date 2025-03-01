@@ -2,23 +2,17 @@ resource "aws_iam_role" "eks_role" {
   name = "eks-cluster-role"
 
   assume_role_policy = jsonencode({
-	"Version": "2012-10-17",
-	"Statement": [
-		{
-			"Effect": "Allow",
-			"Principal": {
-				"Federated": "arn:aws:iam::183631319967:oidc-provider/oidc.eks.ap-south-1.amazonaws.com/id/78B46CF52904510D97250CC78B291942"
-			},
-			"Action": "sts:AssumeRoleWithWebIdentity",
-			"Condition": {
-				"StringEquals": {
-					"oidc.eks.ap-south-1.amazonaws.com/id/78B46CF52904510D97250CC78B291942:aud": "sts.amazonaws.com",
-					"oidc.eks.ap-south-1.amazonaws.com/id/78B46CF52904510D97250CC78B291942:sub": "system:serviceaccount:default:ecr-access-sa"
-				}
-			}
-		}
-	]
-})
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "eks.amazonaws.com"
+        }
+      }
+    ]
+  })
 }
 
 /*
