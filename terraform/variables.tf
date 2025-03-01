@@ -32,13 +32,3 @@ locals {
     "private" = "private-eks-managed-nodes"
   }
 }
-
-variable "ami" {
-  type    = string
-  default = "ami-001fa4fe00c43b5f6"
-}
-
-variable "eks_node_ami" {
-  type    = string
-  default = "ami-06c26bd3c5caf927f"
-}

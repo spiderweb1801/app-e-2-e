@@ -1,3 +1,7 @@
+data "aws_ssm_parameter" "eks_ami" {
+  name = "/aws/service/eks/optimized-ami/1.27/amazon-linux-2/recommended/image_id"
+}
+
 resource "aws_launch_template" "eks_node_group" {
   name     = "eks_template"
 
@@ -11,7 +15,7 @@ resource "aws_launch_template" "eks_node_group" {
     }
   }
 
-  image_id = var.eks_node_ami
+  image_id = data.aws_ssm_parameter.eks_ami.value
 
   metadata_options {
     http_tokens                 = "required"
