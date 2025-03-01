@@ -1,5 +1,5 @@
 resource "aws_security_group" "eks_nodes_sg" {
-  name        = "EKSSecurityGroup"
+  name        = "EKSNodeSecurityGroup"
   description = "Allow managed and unmanaged nodes to communicate with each other (all ports)"
   vpc_id      = aws_vpc.main.id
 
