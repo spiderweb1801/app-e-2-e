@@ -38,3 +38,8 @@ eksctl internally generates a CloudFormation template, which includes multiple s
 4. **IAM Stack** - Defines roles and policies for EKS and nodes.
 
 ## The manifestation file at the backend created all the EKS resources using the cloudformation template. The template is "cloudformationtemplate.yaml" file.
+
+## EKSCTL commands
+eksctl create cluster --name my-cluster
+OR
+eksctl create cluster -f filename.yaml
