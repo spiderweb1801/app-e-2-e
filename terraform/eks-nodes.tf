@@ -48,8 +48,6 @@ resource "aws_launch_template" "eks_node_group" {
     }
   }
 
-  vpc_security_group_ids = [ aws_security_group.eks_nodes_sg.id ]
-
 }
 
 resource "aws_eks_node_group" "eks_node" {
