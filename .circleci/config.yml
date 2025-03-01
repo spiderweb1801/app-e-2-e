@@ -221,8 +221,14 @@ commands:
             kubectl delete service -n hello-world
             kubectl delete deployment -n hello-world
             kubectl delete namespace -n hello-world
-            aws ecr list-images --repository-name hello-world --region ap-south-1 --query 'imageIds[*]' --output json | jq -c '{imageIds: .}' | xargs -I {} aws ecr batch-delete-image --repository-name hello-world --region ap-south-1 --cli-input-json '{}'
-
+            image_digests=$(aws ecr list-images --repository-name hello-world --region ap-south-1 --query 'imageIds[*].imageDigest' --output text)
+            if [ -n "$image_digests" ]; then
+              for digest in $image_digests; do
+                aws ecr batch-delete-image --repository-name hello-world --region ap-south-1 --image-ids imageDigest=$digest
+              done
+            else
+              echo "No images found in ECR repository hello-world"
+            fi
 
 jobs:
   

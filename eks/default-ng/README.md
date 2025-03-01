@@ -53,3 +53,5 @@ new-cluster     ap-south-1      False
 kubectl config current-context
 
 kubectl auth can-i create pods/exec
+
+eksctl delete cluster --name my-eks-cluster --region ap-south-1
