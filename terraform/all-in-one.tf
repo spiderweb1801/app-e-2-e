@@ -125,7 +125,7 @@ resource "aws_launch_template" "eks_nodes" {
   user_data = base64encode(<<-EOF
     #!/bin/bash
     set -o xtrace
-    /etc/eks/bootstrap.sh ${var.cluster_name}
+    /etc/eks/bootstrap.sh new-cluster
   EOF
   )
 }
