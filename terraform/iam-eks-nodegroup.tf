@@ -99,7 +99,7 @@ resource "aws_iam_role" "node_instance_role" {
 }
 
 resource "aws_iam_role_policy_attachments_exclusive" "managed_policies" {
-  role_name  = aws_iam_group.node_instance_role.name
+  role_name  = aws_iam_role.node_instance_role.name
   policy_arns = [
       "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser",
       "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
