@@ -126,12 +126,15 @@ commands:
             eksctl create cluster -f <<parameters.eks-filename>>
   
   update-eks-kube-config:
+    parameters:
+      ekscluster-name:
+        type: string
     steps:
         - run:
             name: EKS config
             command: |
               source $BASH_ENV
-              aws eks update-kubeconfig --name hello-world-cluster --region ap-south-1 --alias eks-cluster
+              aws eks update-kubeconfig --name <<parameters.ekscluster-name>> --region ap-south-1
 
   verify-eks:
     steps:
@@ -196,7 +199,8 @@ commands:
       - checkout
       - aws-authentication-docker
       - install-kubectl
-      - update-eks-kube-config
+      - update-eks-kube-config:
+          ekscluster-name: new-cluster
 
   delete-all:
     steps:
