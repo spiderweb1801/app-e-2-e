@@ -1,53 +1,56 @@
-# resource "aws_launch_template" "eks_node_group" {
-#   name     = "eks_template"
+resource "aws_launch_template" "eks_node_group" {
+  name     = "eks_template"
 
-#   block_device_mappings {
-#     device_name = "/dev/xvda"
-#     ebs {
-#       volume_size = 20
-#       volume_type = "gp3"
-#       iops        = 3000
-#       throughput  = 125
-#     }
-#   }
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = 20
+      volume_type = "gp3"
+      iops        = 3000
+      throughput  = 125
+    }
+  }
 
-#   image_id = var.eks_node_ami
+  image_id = var.eks_node_ami
 
-#   metadata_options {
-#     http_tokens                 = "required"
-#     http_put_response_hop_limit = 2
-#   }
+  metadata_options {
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
+  }
 
-#   network_interfaces {
-#     security_groups = [
-#       aws_security_group.eks_sg.id
-#     ]
-#   }
+  network_interfaces {
+    security_groups = [
+      aws_security_group.eks_sg.id
+    ]
+  }
 
-#   tag_specifications {
-#     resource_type = "instance"
-#     tags = {
-#       Name                             = "eks_node"
-#       "alpha.eksctl.io/nodegroup-type" = "managed"
-#     }
-#   }
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name                             = "eks_node"
+      "alpha.eksctl.io/nodegroup-type" = "managed"
+    }
+  }
 
-#   tag_specifications {
-#     resource_type = "volume"
-#     tags = {
-#       Name                             = "eks_node"
-#       "alpha.eksctl.io/nodegroup-type" = "managed"
-#     }
-#   }
+  tag_specifications {
+    resource_type = "volume"
+    tags = {
+      Name                             = "eks_node"
+      "alpha.eksctl.io/nodegroup-type" = "managed"
+    }
+  }
 
-#   tag_specifications {
-#     resource_type = "network-interface"
-#     tags = {
-#       Name                             = "eks_node"
-#       "alpha.eksctl.io/nodegroup-type" = "managed"
-#     }
-#   }
-# }
+  tag_specifications {
+    resource_type = "network-interface"
+    tags = {
+      Name                             = "eks_node"
+      "alpha.eksctl.io/nodegroup-type" = "managed"
+    }
+  }
+
+  vpc_security_group_ids = [ aws_security_group.eks_nodes_sg.id ]
+
+}
 
 resource "aws_eks_node_group" "eks_node" {
   for_each        = local.node_groups
@@ -64,36 +67,15 @@ resource "aws_eks_node_group" "eks_node" {
   update_config {
     max_unavailable = 1
   }
-  # launch_template {
-  #   id      = aws_launch_template.eks_node_group[each.key].id
-  #   version = aws_launch_template.eks_node_group[each.key].latest_version
-  # }
+  launch_template {
+    id      = aws_launch_template.eks_node_group[each.key].id
+    version = "$Latest"
+  }
   depends_on = [
     aws_iam_role_policy_attachment.ebs_policy_attachment,
     aws_iam_role_policy_attachment.efs_policy_attachment,
-    aws_iam_role_policy_attachment.efsec2_policy_attachment
+    aws_iam_role_policy_attachment.efsec2_policy_attachment,
+    aws_iam_role_policy_attachment.albcontroller_policy_attachment
   ]
-}
-
-# worked node security group
-
-resource "aws_security_group" "eks_sg" {
-  name        = "EKSSecurityGroup"
-  description = "Communication between the control plane and worker nodegroups"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"] # Open to all (change for security)
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }
 
