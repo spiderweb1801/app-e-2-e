@@ -1,17 +1,19 @@
-# Use an official lightweight Python image
 FROM python:3.9-slim
 
-# Set the working directory
 WORKDIR /app
 
-# Install Flask (lightweight web framework)
+# Install Flask
 RUN pip install flask
 
-# Copy the application file
-COPY app.py /app/
+# Copy application code
+COPY app.py .
 
-# Expose port 80 for ALB
-EXPOSE 80
+# Expose port 5000
+EXPOSE 5000
 
-# Run the Flask app
-CMD ["python", "app.py"]
+# Set environment variables
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+
+# Run the application
+CMD ["flask", "run"]

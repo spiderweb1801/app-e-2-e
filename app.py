@@ -2,9 +2,9 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route('/')
 def hello():
-    return "Hello, World!"
+    return 'HEllo-World'
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80)  # Run on port 80 for ALB
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
