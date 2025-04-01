@@ -35,7 +35,6 @@ parameters:
     type: boolean
     default: false
   
-
 commands:
   aws-authentication:
     steps:
@@ -247,7 +246,7 @@ jobs:
       terraform-filename:
         type: string
     executor: terraform-executor
-    working_directory: ~/<< pipeline.parameters.terraform-filename >>
+    working_directory: ~/<< parameters.terraform-filename >>
     steps:
       - checkout
       - attach_workspace:
@@ -257,12 +256,12 @@ jobs:
           name: Terraform Init
           command: |
             source $BASH_ENV
-            cd << pipeline.parameters.terraform-filename >> && terraform init -backend-config=backend/dev
+            cd << parameters.terraform-filename >> && terraform init -backend-config=backend/dev
       - run:
           name: Terraform Plan
           command: |
             source $BASH_ENV
-            cd << pipeline.parameters.terraform-filename >> && terraform plan
+            cd << parameters.terraform-filename >> && terraform plan
             
   terraform-apply:
     parameters:
