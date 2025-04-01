@@ -17,7 +17,7 @@ resource "aws_budgets_budget" "monthly_budget_stream" {
   limit_amount      = var.amount_limit
   limit_unit        = "USD"
   time_unit        = "MONTHLY"
-  cost_filter = {
+  cost_filter {
     name = "TagKeyValue"
     values = [
       "aws:Project$LiveStreamingApp"
