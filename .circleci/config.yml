@@ -25,6 +25,16 @@ parameters:
   delete_k8s_all:
     type: boolean
     default: false
+  deploy_infra_stream:
+    type: boolean
+    default: false
+  deploy_app_stream:
+    type: boolean
+    default: false
+  destroy_infra_stream:
+    type: boolean
+    default: false
+  
 
 commands:
   aws-authentication:
@@ -233,8 +243,11 @@ commands:
 jobs:
   
   terraform-plan:
+    parameters:
+      terraform-filename:
+        type: string
     executor: terraform-executor
-    working_directory: ~/terraform
+    working_directory: ~/<< pipeline.parameters.terraform-filename >>
     steps:
       - checkout
       - attach_workspace:
@@ -244,16 +257,19 @@ jobs:
           name: Terraform Init
           command: |
             source $BASH_ENV
-            cd terraform && terraform init -backend-config=backend/dev
+            cd << pipeline.parameters.terraform-filename >> && terraform init -backend-config=backend/dev
       - run:
           name: Terraform Plan
           command: |
             source $BASH_ENV
-            cd terraform && terraform plan
+            cd << pipeline.parameters.terraform-filename >> && terraform plan
             
   terraform-apply:
+    parameters:
+      terraform-filename:
+        type: string
     executor: terraform-executor
-    working_directory: ~/terraform
+    working_directory: ~/<< pipeline.parameters.terraform-filename >>
     steps:
       - checkout
       - attach_workspace:
@@ -263,14 +279,17 @@ jobs:
           name: Terraform Init
           command: |
             source $BASH_ENV
-            cd terraform && terraform init -backend-config=backend/dev
+            cd << pipeline.parameters.terraform-filename >> && terraform init -backend-config=backend/dev
       - run:
           name: Terraform Apply
           command: |
             source $BASH_ENV
-            cd terraform && terraform apply -auto-approve
+            cd << pipeline.parameters.terraform-filename >> && terraform apply -auto-approve
 
   terraform-destroy:
+    parameters:
+      terraform-filename:
+        type: string
     executor: terraform-executor
     steps:
       - checkout
@@ -279,12 +298,12 @@ jobs:
           name: Terraform Init
           command: |
             source $BASH_ENV
-            cd terraform && terraform init -backend-config=backend/dev
+            cd << pipeline.parameters.terraform-filename >> && terraform init -backend-config=backend/dev
       - run:
           name: Terraform Destroy
           command: |
             source $BASH_ENV
-            cd terraform && terraform destroy -auto-approve   
+            cd << pipeline.parameters.terraform-filename >> && terraform destroy -auto-approve   
 
   build:
     docker:
@@ -340,15 +359,17 @@ jobs:
       - delete-all
 
 workflows:
-  terraform-deploy:
+  terraform-deploy-e2e:
     when: << pipeline.parameters.deploy_infra >>
     jobs:
-      - terraform-plan
+      - terraform-plan:
+          terraform-filename: terraform
       - terraform-apply-approval:
           type: approval
           requires:
             - terraform-plan
       - terraform-apply:
+          terraform-filename: terraform
           requires:
             - terraform-apply-approval
   
@@ -366,10 +387,11 @@ workflows:
     jobs:
       - verify-deployments
 
-  terraform-destroy:
+  terraform-destroy-e2e:
     when: << pipeline.parameters.destroy_infra >>
     jobs:
-      - terraform-destroy
+      - terraform-destroy-e2e:
+          terraform-filename: terraform
       # - delete-k8s-all
       # - terraform-destroy:
           # requires:
@@ -379,3 +401,18 @@ workflows:
     when: << pipeline.parameters.delete_k8s_all >>
     jobs:
       - delete-k8s-all
+
+  terraform-deploy-streaming:
+      when: << pipeline.parameters.deploy_infra_stream >>
+      jobs:
+        - terraform-plan:
+            terraform-filename: terraform-stream
+        - terraform-apply-approval:
+            type: approval
+            requires:
+              - terraform-plan
+        - terraform-apply:
+            terraform-filename: terraform-stream
+            requires:
+              - terraform-apply-approval
+    
