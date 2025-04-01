@@ -93,7 +93,7 @@ resource "aws_route_table_association" "private" {
 }
 
 resource "aws_security_group" "default_sg" {
-  vpc_id = aws_vpc.main_vpc.id
+  vpc_id = aws_vpc.main.id
 
   dynamic "ingress" {
     for_each = var.ingress_rules
