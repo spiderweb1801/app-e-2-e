@@ -268,7 +268,7 @@ jobs:
       terraform-filename:
         type: string
     executor: terraform-executor
-    working_directory: ~/<< pipeline.parameters.terraform-filename >>
+    working_directory: ~/<< parameters.terraform-filename >>
     steps:
       - checkout
       - attach_workspace:
@@ -278,12 +278,12 @@ jobs:
           name: Terraform Init
           command: |
             source $BASH_ENV
-            cd << pipeline.parameters.terraform-filename >> && terraform init -backend-config=backend/dev
+            cd << parameters.terraform-filename >> && terraform init -backend-config=backend/dev
       - run:
           name: Terraform Apply
           command: |
             source $BASH_ENV
-            cd << pipeline.parameters.terraform-filename >> && terraform apply -auto-approve
+            cd << parameters.terraform-filename >> && terraform apply -auto-approve
 
   terraform-destroy:
     parameters:
@@ -297,12 +297,12 @@ jobs:
           name: Terraform Init
           command: |
             source $BASH_ENV
-            cd << pipeline.parameters.terraform-filename >> && terraform init -backend-config=backend/dev
+            cd << parameters.terraform-filename >> && terraform init -backend-config=backend/dev
       - run:
           name: Terraform Destroy
           command: |
             source $BASH_ENV
-            cd << pipeline.parameters.terraform-filename >> && terraform destroy -auto-approve   
+            cd << parameters.terraform-filename >> && terraform destroy -auto-approve   
 
   build:
     docker:
