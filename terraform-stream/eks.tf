@@ -4,8 +4,8 @@ resource "aws_eks_cluster" "live_streaming_cluster" {
 
   vpc_config {
     subnet_ids = [
-      aws_subnet.public_subnets.*.id,
-      aws_subnet.private_subnets.*.id
+      values(aws_subnet.public_subnets)[*].id,
+      values(aws_subnet.private_subnets)[*].id
     ]
   }
 
@@ -27,3 +27,9 @@ resource "aws_eks_fargate_profile" "fargate_profile" {
     namespace = "default"
   }
 }
+
+# resource "kubernetes_namespace" "live_streaming" {
+#   metadata {
+#     name = "live-streaming"
+#   }
+# }

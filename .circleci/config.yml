@@ -357,6 +357,34 @@ jobs:
       - common
       - delete-all
 
+  # setup-helm-and-ingress:
+  #   docker:
+  #     - image: circleci/python:latest
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Install Helm
+  #         command: |
+  #           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  #     - run:
+  #         name: Create Kubernetes Namespace
+  #         command: |
+  #           kubectl create namespace live-streaming || echo "Namespace already exists"
+  #     - run:
+  #         name: Add Helm Repositories
+  #         command: |
+  #           helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+  #           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+  #           helm repo add grafana https://grafana.github.io/helm-charts
+  #           helm repo update
+  #     - run:
+  #         name: Install NGINX Ingress Controller
+  #         command: |
+  #           helm install nginx-ingress ingress-nginx/ingress-nginx \
+  #             --namespace live-streaming \
+  #             --wait
+
+
 workflows:
   terraform-deploy-e2e:
     when: << pipeline.parameters.deploy_infra >>
