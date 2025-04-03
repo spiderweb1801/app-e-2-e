@@ -35,17 +35,17 @@ locals {
 }
 
 variable "email_id" {
-  type = string
+  type    = string
   default = "devsecops.sagar@gmail.com"
 }
 
 variable "amount_limit" {
-  type = string
+  type    = string
   default = "100"
 }
 
 variable "budget_threshold" {
-  type = number
+  type    = number
   default = 80
 }
 

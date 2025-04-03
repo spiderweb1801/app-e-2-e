@@ -12,11 +12,11 @@ resource "aws_sns_topic_subscription" "billing_email_sub" {
 
 # AWS Budget for Monthly Cost Limit
 resource "aws_budgets_budget" "monthly_budget_stream" {
-  name              = "Monthly-Budget"
-  budget_type       = "COST"
-  limit_amount      = var.amount_limit
-  limit_unit        = "USD"
-  time_unit        = "MONTHLY"
+  name         = "Monthly-Budget"
+  budget_type  = "COST"
+  limit_amount = var.amount_limit
+  limit_unit   = "USD"
+  time_unit    = "MONTHLY"
   cost_filter {
     name = "TagKeyValue"
     values = [
@@ -26,9 +26,9 @@ resource "aws_budgets_budget" "monthly_budget_stream" {
 
   notification {
     comparison_operator       = "GREATER_THAN"
-    threshold                = var.budget_threshold
-    threshold_type           = "PERCENTAGE"
-    notification_type        = "ACTUAL"
+    threshold                 = var.budget_threshold
+    threshold_type            = "PERCENTAGE"
+    notification_type         = "ACTUAL"
     subscriber_sns_topic_arns = [aws_sns_topic.billing_alerts.arn]
   }
 }

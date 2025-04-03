@@ -1,0 +1,29 @@
+resource "aws_eks_cluster" "live_streaming_cluster" {
+  name     = "live-streaming-cluster"
+  role_arn = aws_iam_role.eks_fargate_role.arn
+
+  vpc_config {
+    subnet_ids = [
+      aws_subnet.public_subnets.*.id,
+      aws_subnet.private_subnets.*.id
+    ]
+  }
+
+  tags = {
+    Name = "live-streaming-cluster"
+  }
+}
+
+resource "aws_eks_fargate_profile" "fargate_profile" {
+  cluster_name           = aws_eks_cluster.live_streaming_cluster.name
+  fargate_profile_name   = "fargate-profile"
+  pod_execution_role_arn = aws_iam_role.eks_fargate_role.arn
+
+  subnet_ids = [
+    aws_subnet.private_subnets.*.id
+  ]
+
+  selector {
+    namespace = "default"
+  }
+}

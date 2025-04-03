@@ -3,10 +3,10 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Project   = "LiveStreamingApp"
-      Owner     = "SachinSagar"
+      Project     = "LiveStreamingApp"
+      Owner       = "SachinSagar"
       Environment = "Development"
-      createdBy = "Terraform"
+      createdBy   = "Terraform"
     }
   }
 }
