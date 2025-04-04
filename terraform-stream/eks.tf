@@ -14,7 +14,7 @@ resource "aws_eks_cluster" "live_streaming_cluster" {
 resource "aws_eks_fargate_profile" "fargate_profile" {
   cluster_name           = aws_eks_cluster.live_streaming_cluster.name
   fargate_profile_name   = "fargate-profile"
-  pod_execution_role_arn = aws_iam_role.eks_fargate_role.arn
+  pod_execution_role_arn = aws_iam_role.fargate_pod_execution_role.arn
 
   subnet_ids = [for i in aws_subnet.private_subnets : i.id]
 

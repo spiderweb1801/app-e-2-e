@@ -21,6 +21,31 @@ resource "aws_iam_role" "eks_fargate_role" {
   }
 }
 
+resource "aws_iam_role" "fargate_pod_execution_role" {
+  name = "eks-fargate-pod-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Principal = {
+        Service = "eks-fargate-pods.amazonaws.com"
+      }
+      Effect = "Allow"
+    }]
+  })
+
+  tags = {
+    Name = "fargate-pod-execution-role"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "fargate_policy_attachment" {
+  role       = aws_iam_role.fargate_pod_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+}
+
+
 resource "aws_iam_role_policy_attachment" "eks_fargate_policy" {
   role       = aws_iam_role.eks_fargate_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
@@ -51,7 +76,7 @@ resource "aws_iam_role" "ec2_role" {
 
 resource "aws_iam_role_policy_attachment" "ec2_policy" {
   role       = aws_iam_role.ec2_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2RoleforSSM"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 # S3 Access Role (for video storage)
@@ -107,36 +132,36 @@ resource "aws_iam_role" "cloudfront_role" {
 
 resource "aws_iam_role_policy_attachment" "cloudfront_policy" {
   role       = aws_iam_role.cloudfront_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSCloudFrontReadOnlyAccess"
+  policy_arn = "arn:aws:iam::aws:policy/CloudFrontReadOnlyAccess"
 }
 
 # Billing & Cost Management Role
-resource "aws_iam_role" "billing_role" {
-  name = "billing-role"
+# resource "aws_iam_role" "billing_role" {
+#   name = "billing-role"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Principal = {
-          Service = "awsbilling.amazonaws.com"
-        }
-        Effect = "Allow"
-        Sid    = ""
-      },
-    ]
-  })
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Action = "sts:AssumeRole"
+#         Principal = {
+#           Service = "awsbilling.amazonaws.com"
+#         }
+#         Effect = "Allow"
+#         Sid    = ""
+#       },
+#     ]
+#   })
 
-  tags = {
-    Name = "billing-role"
-  }
-}
+#   tags = {
+#     Name = "billing-role"
+#   }
+# }
 
-resource "aws_iam_role_policy_attachment" "billing_policy" {
-  role       = aws_iam_role.billing_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSBillingReadOnlyAccess"
-}
+# resource "aws_iam_role_policy_attachment" "billing_policy" {
+#   role       = aws_iam_role.billing_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/AWSBillingReadOnlyAccess"
+# }
 
 # CloudWatch & CloudTrail Role (Logging)
 resource "aws_iam_role" "cloudwatch_role" {
@@ -168,5 +193,5 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_policy" {
 
 resource "aws_iam_role_policy_attachment" "cloudtrail_policy" {
   role       = aws_iam_role.cloudwatch_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSCloudTrailFullAccess"
+  policy_arn = "arn:aws:iam::aws:policy/AWSCloudTrail_FullAccess"
 }
