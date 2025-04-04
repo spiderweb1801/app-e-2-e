@@ -20,3 +20,30 @@ resource "helm_release" "nginx_ingress" {
     value = "LoadBalancer"
   }
 }
+
+resource "helm_release" "mock_streaming_app" {
+  name             = "mock-streaming-app"
+  chart            = "./charts/mock-backend"   # A mock Helm chart we can create
+  namespace        = "live-stream"
+  create_namespace = true
+
+  set {
+    name  = "image.repository"
+    value = "nginxdemos/hello"
+  }
+
+  set {
+    name  = "image.tag"
+    value = "latest"
+  }
+
+  set {
+    name  = "service.type"
+    value = "LoadBalancer"
+  }
+
+  set {
+    name  = "replicaCount"
+    value = "2"
+  }
+}
