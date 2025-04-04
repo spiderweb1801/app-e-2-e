@@ -4,8 +4,8 @@ resource "aws_eks_cluster" "live_streaming_cluster" {
 
   vpc_config {
     subnet_ids = [
-      aws_subnet.public_subnets[*].id,
-      aws_subnet.private_subnets[*].id
+      aws_subnet.public_subnets.[*].id,
+      aws_subnet.private_subnets.[*].id
     ]
   }
 
