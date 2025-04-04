@@ -16,9 +16,7 @@ resource "aws_eks_fargate_profile" "fargate_profile" {
   fargate_profile_name   = "fargate-profile"
   pod_execution_role_arn = aws_iam_role.eks_fargate_role.arn
 
-  subnet_ids = [
-    aws_subnet.private_subnets.*.id
-  ]
+  subnet_ids = [for i in aws_subnet.private_subnets : i.id]
 
   selector {
     namespace = "default"
