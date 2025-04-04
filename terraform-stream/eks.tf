@@ -3,10 +3,7 @@ resource "aws_eks_cluster" "live_streaming_cluster" {
   role_arn = aws_iam_role.eks_fargate_role.arn
 
   vpc_config {
-    subnet_ids = [
-      aws_subnet.public_subnets.*.id,
-      aws_subnet.private_subnets.*.id
-    ]
+    subnet_ids = concat([for i in aws_subnet.public_subnets : i.id], [for i in aws_subnet.private_subnets : i.id])
   }
 
   tags = {
