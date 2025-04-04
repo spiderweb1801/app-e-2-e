@@ -41,7 +41,7 @@ variable "email_id" {
 
 variable "amount_limit" {
   type    = string
-  default = "100"
+  default = "50"
 }
 
 variable "budget_threshold" {
